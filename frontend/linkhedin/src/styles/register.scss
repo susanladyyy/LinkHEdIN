@@ -1,0 +1,112 @@
+@import './mixin/mixin.scss';
+@import './variables/variables.scss';
+
+.registerPage {
+    .register-title {
+        font-size: 1.7em;
+        text-align: center;
+        margin-bottom: 15px;
+        color: $dark_gray;
+        margin-top: -2%;
+    }
+}
+
+.registerForm {
+    @include centralizedFlex();
+    @include divCentralized();
+
+    background-color: $white;
+    border: 1px solid $light_gray;
+    padding: 15px;
+    width: 380px;
+    border-radius: 10px;
+    box-shadow: 5px 4px 5px $light_gray;
+
+    .form-input-group {
+        margin: 15px;
+
+        .or-google-login {
+            text-align: center;
+            margin: 20px 0px;
+        }
+
+        .google-login-button {
+            img {
+                width: 25px;
+                margin-right: 10px;
+            }
+
+            button {
+                background-color: $white;
+                border: none;
+                color: $dark_gray;
+            }
+
+            @include centralizedFlex();
+            border: 1px solid $medium_gray;
+            padding: 10px;
+            border-radius: 35px;
+            cursor: pointer;
+            margin-bottom: 30px;
+        }
+    }
+
+    .register-form-label {
+        color: $dark_gray;
+        margin: 15px 0px 5px 0px;
+    }
+
+    .tnc-text {
+        @include divCentralized();
+        text-align: center;
+        color: $dark_gray;
+        width: 350px;
+        font-size: 0.8em;
+
+        a {
+            @include richText(0.8em);
+        }
+    }
+
+    .already-a-user {
+        text-align: center;
+
+        a {
+            @include richText(1em);
+        }
+    }
+
+    .register-form-input {
+        position: relative;
+
+        input {
+            height: 35px;
+            width: 350px;
+            border-radius: 10px;
+            border: 1px solid $medium_gray;
+            padding: 0px 8px;
+        }
+
+        i {
+            position: absolute;
+            padding: 8px;
+            right: 5px;
+            text-align: center;
+            color: $dark_gray;
+            font-size: 1.3em;
+        }
+
+        i:hover {
+            color: $medium_gray;
+            cursor: pointer;
+        }
+    }
+
+    .email-sent-message {
+        p {
+            text-align: center;
+            padding: 15px 0px 0px;
+            color: $medium_gray;
+        }
+    }
+}

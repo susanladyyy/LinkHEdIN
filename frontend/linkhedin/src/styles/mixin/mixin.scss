@@ -1,0 +1,22 @@
+@mixin init {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+@mixin centralizedFlex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@mixin divCentralized {
+    margin: auto;
+}
+
+@mixin richText ($size) {
+    text-decoration: none;
+    color: $linkedin_blue;
+    font-weight: 600;
+    font-size: $size;
+}

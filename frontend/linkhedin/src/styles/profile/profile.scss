@@ -1,0 +1,123 @@
+@import '../variables/variables.scss';
+
+.profileView {
+    margin: 10px 0px 0px;
+    height: auto;
+    padding: 20px 100px;
+    display: flex;
+    flex-direction: row;
+    background-color: $linkedin_cream;
+
+    .left-profile{
+        float: left;
+        display: flex;
+        flex-direction: column;
+        width: 67.5%;
+        margin-right: 20px;
+        position: relative;
+
+        .profile {
+            margin-bottom: 10px;
+            .banner {
+                img {
+                    width: 100%;
+                    height: auto;
+                    border-top-left-radius: 10px;
+                    border-top-right-radius: 10px;
+                }
+            }
+        
+            .profile-image {
+                position: absolute;
+                z-index: 1;
+                top: 15%;
+                left: 5%;
+        
+                img {
+                    border-radius: 50%;
+                    width: 150px;
+                    border: 3px solid $white;
+                }
+            }
+        
+            .profile-data {
+                padding: 80px 40px;
+                background-color: $white;
+                border-bottom-left-radius: 10px;
+                border-bottom-right-radius: 10px;
+                height: auto;
+                width: auto;
+                position: relative;
+                top: -3.75px;
+            }
+        }
+
+        .analytics, .resources, .about, .activity, .experience, .education, .license-certif, .skill, .interest, .uploaded-jobs {
+            background-color: $white;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .about {
+            padding: 20px;
+
+            .title-about {
+                font-size: 1.4em;
+                font-weight: 550;
+                margin-bottom: 25px;
+            }
+        }
+
+        .uploaded-jobs {
+            padding: 20px;
+
+            i {
+                float: right;
+                font-size: 1.8em;
+                color: $dark_gray;
+                cursor: pointer;
+            }
+
+            .title-job {
+                font-size: 1.4em;
+                font-weight: 550;
+                margin-bottom: 25px;
+            }
+
+            .list-job {
+                p {
+                    margin-bottom: 5px;
+                }
+            }
+        }
+
+        .edit-icon {
+            font-size: 1.8em;
+            color: $dark_gray;
+            float: right;
+        }
+
+        .edit-icon:hover {
+            color: black;
+            cursor: pointer;
+        }
+    }
+
+    .right-profile {
+        width: 30%;
+        margin-left: 20px;
+        .edit-profile, .jobs-profile, .people-also-viewed {
+            background-color: $white;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .jobs-profile {
+            padding: 10px;
+            img {
+                width: 100%;
+                height: auto;
+            }
+        }
+    }
+}

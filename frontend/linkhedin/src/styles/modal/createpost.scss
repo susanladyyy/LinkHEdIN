@@ -1,0 +1,69 @@
+@import '../variables/variables.scss';
+@import '../mixin/mixin.scss';
+
+.create-post {
+    border-radius: 10px;
+    background-color: $white;
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%, 25%);
+
+    .card {
+        width: auto;
+    }
+
+    .card-header {
+        i {
+            float: right;
+            cursor: pointer;
+        }
+
+        h2 {
+            font-size: 1.2em;
+            font-weight: 400;
+            text-align: center;
+        }
+        padding: 10px;
+    }
+
+    .card-body {
+        padding: 10px;
+
+        .error {
+            font-size: 0.8em;
+            color: $accent_red;
+        }
+        form {
+            @include centralizedFlex();
+            flex-direction: column;
+
+            .caption {
+                textarea {
+                    border: none;
+                    width: 100%;
+                }
+            }
+
+            .media {
+                .preview {
+                    padding: 10px;
+                    img {
+                        width: 100%;
+                        height: auto;
+                    }
+                }
+                .post-submit {
+                    float: right;
+                    input {
+                        background-color: none;
+                        border: none;
+                        border-radius: 20px;
+                        padding: 5px 15px;
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+    }
+}

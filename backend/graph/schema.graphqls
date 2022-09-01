@@ -1,0 +1,256 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+type Industry {
+  id : ID!
+  industryname : String!
+}
+
+type Employmenttype {
+  id : ID!
+  employmenttypename : String!
+}
+
+type Experience {
+  id : ID!
+  userid : Float!
+  title : String!
+  employmenttypeid : Float!
+  industryid : Float!
+  companyname : String!
+  location : String!
+  startdate : String!
+  enddate : String
+  description : String
+}
+
+type Experienceskill {
+  id : ID!
+  skillid : Float!
+  experienceid : Float!
+}
+
+type Degree {
+  id : ID!
+  degreename : String!
+}
+
+type School {
+  id : ID!
+  schoolname : String!
+}
+
+type Studyfield {
+  id : ID!
+  fieldname : String!
+}
+
+type Education {
+  id : ID!
+  schoolid : Float!
+  degreeid : Float!
+  fieldofstudyid : Float!
+  startdate : String!
+  enddate : String
+  grade : Float
+  activities : String
+  description : String
+}
+
+type Websitetype {
+  id : ID!
+  websitetypename : String!
+}
+
+type Servicetype {
+  id : ID!
+  servicename : String!
+}
+
+type Mediatype {
+  id : ID!
+  mediatypename : String!
+}
+
+type Skill {
+  id : ID!
+  skillname : String!
+}
+
+type Pronoun {
+  id : ID!
+  pronounsname : String!
+}
+
+type Country {
+  id : ID!
+  countryname : String!
+}
+
+type City {
+  id : ID!
+  countryid : Float!
+  cityname : String!
+}
+
+type Location {
+  id : ID!
+  countryid : Float!
+  cityid : Float!
+}
+
+type Phonetype {
+  id : ID!
+  phonetypename : String!
+}
+
+type Userphonenumber {
+  id : ID!
+  phonenumber : String!
+  phonetypeid : Float!
+}
+
+type Usercontact {
+  id : ID!
+  userphonenumberid : Float
+  address : String
+  birthday : String
+}
+
+type User {
+  id : ID!
+  pronounsid : Float
+  firstname : String!
+  lastname : String!
+  additionalname : String
+  headline : String!
+  locationid : Float
+  usercontactsid : Float
+  password : String!
+  profile : String
+  banner : String
+  profileurl : String!
+  email : String!
+  activation : Boolean!
+  about : String!
+}
+
+type Userconnection {
+  id : ID!
+  userid : Float!
+  useridconnect : Float!
+  status : Boolean!
+}
+
+type Usercurrposition {
+  id : ID!
+  experienceid : String!
+}
+
+type Usereducation {
+  id : ID!
+  userid : Float!
+  educationid : Float!
+}
+
+type Userfollower {
+  id : ID!
+  userid : Float!
+  useridfollower : Float!
+}
+
+type Userfollowing {
+  id : ID!
+  userid : Float!
+  useridfollowed : Float!
+}
+
+type Userinstantmessaging {
+  id : ID!
+  usercontactid : Float!
+  serviceid : Float!
+  username : String!
+}
+
+type Userwebsite {
+  id : ID!
+  usercontactsid : Float!
+  websitetypeid : Float!
+  websiteurl : String!
+}
+
+type Job {
+  id : ID!
+  name : String!
+  company : String!
+  location : String!
+  userid : Float!
+}
+
+type Query {
+  countries: [Country!]!
+  cities: [City!]!
+  pronouns: [Pronoun!]!
+  industries: [Industry!]!
+  employmenttypes: [Employmenttype!]!
+  degrees: [Degree!]!
+  schools: [School!]!
+  studyfields: [Studyfield!]!
+  phonetypes: [Phonetype!]!
+  websitetypes: [Websitetype!]!
+  servicetypes: [Servicetype!]!
+  mediatypes: [Mediatype!]!
+  skills: [Skill!]!
+  users (email: String, password: String, url: String): [User!]!
+  temporaries (url: String) : [Temporary!]!
+  usereducations (id: ID!): [Usereducation!]!
+  userconnections (id: ID!, status: Boolean) : [Userconnection!]!
+  jobs (userid: ID): [Job!]!
+}
+
+type Temporary {
+  id : ID!
+  email : String!
+  password : String!
+  url : String!
+}
+
+input NewUser {
+  firstname : String!
+  lastname : String!
+  password : String!
+  profileurl : String!
+  email : String!
+  activation : Boolean!
+}
+
+input NewTemporary {
+  email : String!
+  password : String!
+  url : String!
+}
+
+input DeleteTemporary {
+  url : String!
+}
+
+input NewPass {
+  id : ID!
+  password : String!
+}
+
+input NewJob {
+  name : String!
+  company : String!
+  location : String!
+  userid : Float!
+}
+
+type Mutation {
+  updatePassword(input: NewPass!) : User!
+  createUser(input: NewUser!): User!
+  createTemporary(input: NewTemporary!): Temporary!
+  deleteTemporary(input: DeleteTemporary!) : Boolean!
+  createJob(input: NewJob!) : Job!
+}

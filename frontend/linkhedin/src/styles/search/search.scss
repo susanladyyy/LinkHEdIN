@@ -1,0 +1,30 @@
+@import '../variables/variables.scss';
+
+.search-page {
+    background-color: $linkedin_cream;
+    min-height: 100vh;
+
+    .search-user {
+        .search-profile {
+            margin: 20px auto;
+            width: 80%;
+            background-color: $white;
+            border-radius: 10px;
+            padding: 10px;
+
+            button {
+                float: right;
+                padding: 5px 30px;
+                background-color: $white;
+                border: 1px $linkedin_blue solid;
+                border-radius: 30px;
+                color: $linkedin_blue;
+                cursor: pointer;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+        }
+    }
+}

@@ -43,7 +43,11 @@ export default function ProfileView() {
         if(!loadJob) {
             setJobs(dataJob.jobs)
         }
-    }, [loading, loadJob])
+
+        if(dataJob) {
+            setJobs(dataJob.jobs)
+        }
+    }, [loading, loadJob, dataJob])
     
     let navigate = useNavigate()
 

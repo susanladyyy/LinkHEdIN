@@ -121,10 +121,13 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
+		CreateConnect   func(childComplexity int, input model.NewConnect) int
 		CreateJob       func(childComplexity int, input model.NewJob) int
 		CreateTemporary func(childComplexity int, input model.NewTemporary) int
 		CreateUser      func(childComplexity int, input model.NewUser) int
+		DeleteConnect   func(childComplexity int, input model.DelConnect) int
 		DeleteTemporary func(childComplexity int, input model.DeleteTemporary) int
+		UpdateConnect   func(childComplexity int, input model.UpdateConnect) int
 		UpdatePassword  func(childComplexity int, input model.NewPass) int
 	}
 
@@ -142,7 +145,9 @@ type ComplexityRoot struct {
 		Cities          func(childComplexity int) int
 		Countries       func(childComplexity int) int
 		Degrees         func(childComplexity int) int
+		Educations      func(childComplexity int) int
 		Employmenttypes func(childComplexity int) int
+		Experiences     func(childComplexity int) int
 		Industries      func(childComplexity int) int
 		Jobs            func(childComplexity int, userid *string) int
 		Mediatypes      func(childComplexity int) int
@@ -155,7 +160,7 @@ type ComplexityRoot struct {
 		Temporaries     func(childComplexity int, url *string) int
 		Userconnections func(childComplexity int, id string, status *bool) int
 		Usereducations  func(childComplexity int, id string) int
-		Users           func(childComplexity int, email *string, password *string, url *string) int
+		Users           func(childComplexity int, email *string, password *string, url *string, name *string) int
 		Websitetypes    func(childComplexity int) int
 	}
 
@@ -273,6 +278,9 @@ type MutationResolver interface {
 	CreateTemporary(ctx context.Context, input model.NewTemporary) (*model.Temporary, error)
 	DeleteTemporary(ctx context.Context, input model.DeleteTemporary) (bool, error)
 	CreateJob(ctx context.Context, input model.NewJob) (*model.Job, error)
+	UpdateConnect(ctx context.Context, input model.UpdateConnect) (*model.Userconnection, error)
+	CreateConnect(ctx context.Context, input model.NewConnect) (*model.Userconnection, error)
+	DeleteConnect(ctx context.Context, input model.DelConnect) (bool, error)
 }
 type QueryResolver interface {
 	Countries(ctx context.Context) ([]*model.Country, error)
@@ -288,11 +296,13 @@ type QueryResolver interface {
 	Servicetypes(ctx context.Context) ([]*model.Servicetype, error)
 	Mediatypes(ctx context.Context) ([]*model.Mediatype, error)
 	Skills(ctx context.Context) ([]*model.Skill, error)
-	Users(ctx context.Context, email *string, password *string, url *string) ([]*model.User, error)
+	Users(ctx context.Context, email *string, password *string, url *string, name *string) ([]*model.User, error)
 	Temporaries(ctx context.Context, url *string) ([]*model.Temporary, error)
 	Usereducations(ctx context.Context, id string) ([]*model.Usereducation, error)
 	Userconnections(ctx context.Context, id string, status *bool) ([]*model.Userconnection, error)
 	Jobs(ctx context.Context, userid *string) ([]*model.Job, error)
+	Educations(ctx context.Context) ([]*model.Education, error)
+	Experiences(ctx context.Context) ([]*model.Experience, error)
 }
 
 type executableSchema struct {
@@ -611,6 +621,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mediatype.Mediatypename(childComplexity), true
 
+	case "Mutation.createConnect":
+		if e.complexity.Mutation.CreateConnect == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createConnect_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateConnect(childComplexity, args["input"].(model.NewConnect)), true
+
 	case "Mutation.createJob":
 		if e.complexity.Mutation.CreateJob == nil {
 			break
@@ -647,6 +669,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateUser(childComplexity, args["input"].(model.NewUser)), true
 
+	case "Mutation.deleteConnect":
+		if e.complexity.Mutation.DeleteConnect == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteConnect_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteConnect(childComplexity, args["input"].(model.DelConnect)), true
+
 	case "Mutation.deleteTemporary":
 		if e.complexity.Mutation.DeleteTemporary == nil {
 			break
@@ -658,6 +692,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.DeleteTemporary(childComplexity, args["input"].(model.DeleteTemporary)), true
+
+	case "Mutation.updateConnect":
+		if e.complexity.Mutation.UpdateConnect == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateConnect_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateConnect(childComplexity, args["input"].(model.UpdateConnect)), true
 
 	case "Mutation.updatePassword":
 		if e.complexity.Mutation.UpdatePassword == nil {
@@ -720,12 +766,26 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Degrees(childComplexity), true
 
+	case "Query.educations":
+		if e.complexity.Query.Educations == nil {
+			break
+		}
+
+		return e.complexity.Query.Educations(childComplexity), true
+
 	case "Query.employmenttypes":
 		if e.complexity.Query.Employmenttypes == nil {
 			break
 		}
 
 		return e.complexity.Query.Employmenttypes(childComplexity), true
+
+	case "Query.experiences":
+		if e.complexity.Query.Experiences == nil {
+			break
+		}
+
+		return e.complexity.Query.Experiences(childComplexity), true
 
 	case "Query.industries":
 		if e.complexity.Query.Industries == nil {
@@ -841,7 +901,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Users(childComplexity, args["email"].(*string), args["password"].(*string), args["url"].(*string)), true
+		return e.complexity.Query.Users(childComplexity, args["email"].(*string), args["password"].(*string), args["url"].(*string), args["name"].(*string)), true
 
 	case "Query.websitetypes":
 		if e.complexity.Query.Websitetypes == nil {
@@ -1271,11 +1331,14 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	rc := graphql.GetOperationContext(ctx)
 	ec := executionContext{rc, e}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
+		ec.unmarshalInputDelConnect,
 		ec.unmarshalInputDeleteTemporary,
+		ec.unmarshalInputNewConnect,
 		ec.unmarshalInputNewJob,
 		ec.unmarshalInputNewPass,
 		ec.unmarshalInputNewTemporary,
 		ec.unmarshalInputNewUser,
+		ec.unmarshalInputUpdateConnect,
 	)
 	first := true
 
@@ -1540,11 +1603,13 @@ type Query {
   servicetypes: [Servicetype!]!
   mediatypes: [Mediatype!]!
   skills: [Skill!]!
-  users (email: String, password: String, url: String): [User!]!
+  users (email: String, password: String, url: String, name: String): [User!]!
   temporaries (url: String) : [Temporary!]!
   usereducations (id: ID!): [Usereducation!]!
   userconnections (id: ID!, status: Boolean) : [Userconnection!]!
   jobs (userid: ID): [Job!]!
+  educations: [Education!]!
+  experiences: [Experience!]!
 }
 
 type Temporary {
@@ -1585,12 +1650,32 @@ input NewJob {
   userid : Float!
 }
 
+input UpdateConnect {
+  userid : Float!
+  useridconnect : Float!
+  status : Boolean!
+}
+
+input NewConnect {
+  userid : Float!
+  useridconnect : Float!
+  status : Boolean!
+}
+
+input DelConnect {
+  userid : String!
+  useridconnect : String!
+}
+
 type Mutation {
   updatePassword(input: NewPass!) : User!
   createUser(input: NewUser!): User!
   createTemporary(input: NewTemporary!): Temporary!
   deleteTemporary(input: DeleteTemporary!) : Boolean!
   createJob(input: NewJob!) : Job!
+  updateConnect(input: UpdateConnect!): Userconnection!
+  createConnect(input: NewConnect!): Userconnection!
+  deleteConnect(input: DelConnect!) : Boolean!
 }`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
@@ -1598,6 +1683,21 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
+
+func (ec *executionContext) field_Mutation_createConnect_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.NewConnect
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNNewConnect2githubᚗcomᚋsusanladyyyᚋLinkHEdINᚋgraphᚋmodelᚐNewConnect(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
 
 func (ec *executionContext) field_Mutation_createJob_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
@@ -1644,6 +1744,21 @@ func (ec *executionContext) field_Mutation_createUser_args(ctx context.Context, 
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_deleteConnect_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.DelConnect
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNDelConnect2githubᚗcomᚋsusanladyyyᚋLinkHEdINᚋgraphᚋmodelᚐDelConnect(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_deleteTemporary_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -1651,6 +1766,21 @@ func (ec *executionContext) field_Mutation_deleteTemporary_args(ctx context.Cont
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNDeleteTemporary2githubᚗcomᚋsusanladyyyᚋLinkHEdINᚋgraphᚋmodelᚐDeleteTemporary(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateConnect_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.UpdateConnect
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNUpdateConnect2githubᚗcomᚋsusanladyyyᚋLinkHEdINᚋgraphᚋmodelᚐUpdateConnect(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1788,6 +1918,15 @@ func (ec *executionContext) field_Query_users_args(ctx context.Context, rawArgs 
 		}
 	}
 	args["url"] = arg2
+	var arg3 *string
+	if tmp, ok := rawArgs["name"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+		arg3, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["name"] = arg3
 	return args, nil
 }
 
@@ -4064,6 +4203,191 @@ func (ec *executionContext) fieldContext_Mutation_createJob(ctx context.Context,
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_updateConnect(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_updateConnect(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateConnect(rctx, fc.Args["input"].(model.UpdateConnect))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Userconnection)
+	fc.Result = res
+	return ec.marshalNUserconnection2ᚖgithubᚗcomᚋsusanladyyyᚋLinkHEdINᚋgraphᚋmodelᚐUserconnection(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_updateConnect(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Userconnection_id(ctx, field)
+			case "userid":
+				return ec.fieldContext_Userconnection_userid(ctx, field)
+			case "useridconnect":
+				return ec.fieldContext_Userconnection_useridconnect(ctx, field)
+			case "status":
+				return ec.fieldContext_Userconnection_status(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Userconnection", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_updateConnect_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_createConnect(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createConnect(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateConnect(rctx, fc.Args["input"].(model.NewConnect))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Userconnection)
+	fc.Result = res
+	return ec.marshalNUserconnection2ᚖgithubᚗcomᚋsusanladyyyᚋLinkHEdINᚋgraphᚋmodelᚐUserconnection(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_createConnect(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Userconnection_id(ctx, field)
+			case "userid":
+				return ec.fieldContext_Userconnection_userid(ctx, field)
+			case "useridconnect":
+				return ec.fieldContext_Userconnection_useridconnect(ctx, field)
+			case "status":
+				return ec.fieldContext_Userconnection_status(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Userconnection", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_createConnect_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_deleteConnect(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_deleteConnect(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteConnect(rctx, fc.Args["input"].(model.DelConnect))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_deleteConnect(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_deleteConnect_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Phonetype_id(ctx context.Context, field graphql.CollectedField, obj *model.Phonetype) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Phonetype_id(ctx, field)
 	if err != nil {
@@ -4906,7 +5230,7 @@ func (ec *executionContext) _Query_users(ctx context.Context, field graphql.Coll
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Users(rctx, fc.Args["email"].(*string), fc.Args["password"].(*string), fc.Args["url"].(*string))
+		return ec.resolvers.Query().Users(rctx, fc.Args["email"].(*string), fc.Args["password"].(*string), fc.Args["url"].(*string), fc.Args["name"].(*string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -5235,6 +5559,136 @@ func (ec *executionContext) fieldContext_Query_jobs(ctx context.Context, field g
 	if fc.Args, err = ec.field_Query_jobs_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_educations(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_educations(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Educations(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Education)
+	fc.Result = res
+	return ec.marshalNEducation2ᚕᚖgithubᚗcomᚋsusanladyyyᚋLinkHEdINᚋgraphᚋmodelᚐEducationᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_educations(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Education_id(ctx, field)
+			case "schoolid":
+				return ec.fieldContext_Education_schoolid(ctx, field)
+			case "degreeid":
+				return ec.fieldContext_Education_degreeid(ctx, field)
+			case "fieldofstudyid":
+				return ec.fieldContext_Education_fieldofstudyid(ctx, field)
+			case "startdate":
+				return ec.fieldContext_Education_startdate(ctx, field)
+			case "enddate":
+				return ec.fieldContext_Education_enddate(ctx, field)
+			case "grade":
+				return ec.fieldContext_Education_grade(ctx, field)
+			case "activities":
+				return ec.fieldContext_Education_activities(ctx, field)
+			case "description":
+				return ec.fieldContext_Education_description(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Education", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_experiences(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_experiences(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Experiences(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Experience)
+	fc.Result = res
+	return ec.marshalNExperience2ᚕᚖgithubᚗcomᚋsusanladyyyᚋLinkHEdINᚋgraphᚋmodelᚐExperienceᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_experiences(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Experience_id(ctx, field)
+			case "userid":
+				return ec.fieldContext_Experience_userid(ctx, field)
+			case "title":
+				return ec.fieldContext_Experience_title(ctx, field)
+			case "employmenttypeid":
+				return ec.fieldContext_Experience_employmenttypeid(ctx, field)
+			case "industryid":
+				return ec.fieldContext_Experience_industryid(ctx, field)
+			case "companyname":
+				return ec.fieldContext_Experience_companyname(ctx, field)
+			case "location":
+				return ec.fieldContext_Experience_location(ctx, field)
+			case "startdate":
+				return ec.fieldContext_Experience_startdate(ctx, field)
+			case "enddate":
+				return ec.fieldContext_Experience_enddate(ctx, field)
+			case "description":
+				return ec.fieldContext_Experience_description(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Experience", field.Name)
+		},
 	}
 	return fc, nil
 }
@@ -9710,6 +10164,42 @@ func (ec *executionContext) fieldContext___Type_specifiedByURL(ctx context.Conte
 
 // region    **************************** input.gotpl *****************************
 
+func (ec *executionContext) unmarshalInputDelConnect(ctx context.Context, obj interface{}) (model.DelConnect, error) {
+	var it model.DelConnect
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"userid", "useridconnect"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "userid":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userid"))
+			it.Userid, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "useridconnect":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("useridconnect"))
+			it.Useridconnect, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputDeleteTemporary(ctx context.Context, obj interface{}) (model.DeleteTemporary, error) {
 	var it model.DeleteTemporary
 	asMap := map[string]interface{}{}
@@ -9729,6 +10219,50 @@ func (ec *executionContext) unmarshalInputDeleteTemporary(ctx context.Context, o
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("url"))
 			it.URL, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputNewConnect(ctx context.Context, obj interface{}) (model.NewConnect, error) {
+	var it model.NewConnect
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"userid", "useridconnect", "status"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "userid":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userid"))
+			it.Userid, err = ec.unmarshalNFloat2float64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "useridconnect":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("useridconnect"))
+			it.Useridconnect, err = ec.unmarshalNFloat2float64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "status":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("status"))
+			it.Status, err = ec.unmarshalNBoolean2bool(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9929,6 +10463,50 @@ func (ec *executionContext) unmarshalInputNewUser(ctx context.Context, obj inter
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("activation"))
 			it.Activation, err = ec.unmarshalNBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputUpdateConnect(ctx context.Context, obj interface{}) (model.UpdateConnect, error) {
+	var it model.UpdateConnect
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"userid", "useridconnect", "status"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "userid":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userid"))
+			it.Userid, err = ec.unmarshalNFloat2float64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "useridconnect":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("useridconnect"))
+			it.Useridconnect, err = ec.unmarshalNFloat2float64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "status":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("status"))
+			it.Status, err = ec.unmarshalNBoolean2bool(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10524,6 +11102,33 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "updateConnect":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateConnect(ctx, field)
+			})
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "createConnect":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createConnect(ctx, field)
+			})
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "deleteConnect":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_deleteConnect(ctx, field)
+			})
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -11025,6 +11630,52 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_jobs(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "educations":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_educations(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "experiences":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_experiences(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -12278,9 +12929,68 @@ func (ec *executionContext) marshalNDegree2ᚖgithubᚗcomᚋsusanladyyyᚋLinkH
 	return ec._Degree(ctx, sel, v)
 }
 
+func (ec *executionContext) unmarshalNDelConnect2githubᚗcomᚋsusanladyyyᚋLinkHEdINᚋgraphᚋmodelᚐDelConnect(ctx context.Context, v interface{}) (model.DelConnect, error) {
+	res, err := ec.unmarshalInputDelConnect(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNDeleteTemporary2githubᚗcomᚋsusanladyyyᚋLinkHEdINᚋgraphᚋmodelᚐDeleteTemporary(ctx context.Context, v interface{}) (model.DeleteTemporary, error) {
 	res, err := ec.unmarshalInputDeleteTemporary(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNEducation2ᚕᚖgithubᚗcomᚋsusanladyyyᚋLinkHEdINᚋgraphᚋmodelᚐEducationᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Education) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNEducation2ᚖgithubᚗcomᚋsusanladyyyᚋLinkHEdINᚋgraphᚋmodelᚐEducation(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNEducation2ᚖgithubᚗcomᚋsusanladyyyᚋLinkHEdINᚋgraphᚋmodelᚐEducation(ctx context.Context, sel ast.SelectionSet, v *model.Education) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Education(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNEmploymenttype2ᚕᚖgithubᚗcomᚋsusanladyyyᚋLinkHEdINᚋgraphᚋmodelᚐEmploymenttypeᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Employmenttype) graphql.Marshaler {
@@ -12335,6 +13045,60 @@ func (ec *executionContext) marshalNEmploymenttype2ᚖgithubᚗcomᚋsusanladyyy
 		return graphql.Null
 	}
 	return ec._Employmenttype(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNExperience2ᚕᚖgithubᚗcomᚋsusanladyyyᚋLinkHEdINᚋgraphᚋmodelᚐExperienceᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Experience) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNExperience2ᚖgithubᚗcomᚋsusanladyyyᚋLinkHEdINᚋgraphᚋmodelᚐExperience(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNExperience2ᚖgithubᚗcomᚋsusanladyyyᚋLinkHEdINᚋgraphᚋmodelᚐExperience(ctx context.Context, sel ast.SelectionSet, v *model.Experience) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Experience(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNFloat2float64(ctx context.Context, v interface{}) (float64, error) {
@@ -12531,6 +13295,11 @@ func (ec *executionContext) marshalNMediatype2ᚖgithubᚗcomᚋsusanladyyyᚋLi
 		return graphql.Null
 	}
 	return ec._Mediatype(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNNewConnect2githubᚗcomᚋsusanladyyyᚋLinkHEdINᚋgraphᚋmodelᚐNewConnect(ctx context.Context, v interface{}) (model.NewConnect, error) {
+	res, err := ec.unmarshalInputNewConnect(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNNewJob2githubᚗcomᚋsusanladyyyᚋLinkHEdINᚋgraphᚋmodelᚐNewJob(ctx context.Context, v interface{}) (model.NewJob, error) {
@@ -12950,6 +13719,11 @@ func (ec *executionContext) marshalNTemporary2ᚖgithubᚗcomᚋsusanladyyyᚋLi
 	return ec._Temporary(ctx, sel, v)
 }
 
+func (ec *executionContext) unmarshalNUpdateConnect2githubᚗcomᚋsusanladyyyᚋLinkHEdINᚋgraphᚋmodelᚐUpdateConnect(ctx context.Context, v interface{}) (model.UpdateConnect, error) {
+	res, err := ec.unmarshalInputUpdateConnect(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) marshalNUser2githubᚗcomᚋsusanladyyyᚋLinkHEdINᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v model.User) graphql.Marshaler {
 	return ec._User(ctx, sel, &v)
 }
@@ -13006,6 +13780,10 @@ func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋsusanladyyyᚋLinkHEd
 		return graphql.Null
 	}
 	return ec._User(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNUserconnection2githubᚗcomᚋsusanladyyyᚋLinkHEdINᚋgraphᚋmodelᚐUserconnection(ctx context.Context, sel ast.SelectionSet, v model.Userconnection) graphql.Marshaler {
+	return ec._Userconnection(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalNUserconnection2ᚕᚖgithubᚗcomᚋsusanladyyyᚋLinkHEdINᚋgraphᚋmodelᚐUserconnectionᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Userconnection) graphql.Marshaler {

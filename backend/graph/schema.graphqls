@@ -202,11 +202,13 @@ type Query {
   servicetypes: [Servicetype!]!
   mediatypes: [Mediatype!]!
   skills: [Skill!]!
-  users (email: String, password: String, url: String): [User!]!
+  users (email: String, password: String, url: String, name: String): [User!]!
   temporaries (url: String) : [Temporary!]!
   usereducations (id: ID!): [Usereducation!]!
   userconnections (id: ID!, status: Boolean) : [Userconnection!]!
   jobs (userid: ID): [Job!]!
+  educations: [Education!]!
+  experiences: [Experience!]!
 }
 
 type Temporary {
@@ -247,10 +249,30 @@ input NewJob {
   userid : Float!
 }
 
+input UpdateConnect {
+  userid : Float!
+  useridconnect : Float!
+  status : Boolean!
+}
+
+input NewConnect {
+  userid : Float!
+  useridconnect : Float!
+  status : Boolean!
+}
+
+input DelConnect {
+  userid : String!
+  useridconnect : String!
+}
+
 type Mutation {
   updatePassword(input: NewPass!) : User!
   createUser(input: NewUser!): User!
   createTemporary(input: NewTemporary!): Temporary!
   deleteTemporary(input: DeleteTemporary!) : Boolean!
   createJob(input: NewJob!) : Job!
+  updateConnect(input: UpdateConnect!): Userconnection!
+  createConnect(input: NewConnect!): Userconnection!
+  deleteConnect(input: DelConnect!) : Boolean!
 }

@@ -84,11 +84,11 @@ func (r *mutationResolver) DeleteTemporary(ctx context.Context, input model.Dele
 
 // CreateJob is the resolver for the createJob field.
 func (r *mutationResolver) CreateJob(ctx context.Context, input model.NewJob) (*model.Job, error) {
-	job := model.Job {
-		Name: input.Name,
-		Company: input.Company,
+	job := model.Job{
+		Name:     input.Name,
+		Company:  input.Company,
 		Location: input.Location,
-		Userid: input.Userid,
+		Userid:   input.Userid,
 	}
 
 	_, err := r.DB.Model(&job).Insert()
@@ -98,6 +98,51 @@ func (r *mutationResolver) CreateJob(ctx context.Context, input model.NewJob) (*
 	}
 
 	return &job, nil
+}
+
+// UpdateConnect is the resolver for the updateConnect field.
+func (r *mutationResolver) UpdateConnect(ctx context.Context, input model.UpdateConnect) (*model.Userconnection, error) {
+	var usercon model.Userconnection
+
+	usercon.Status = input.Status
+
+	_, err2 := r.DB.Model(&usercon).Where("userid = ? AND useridconnect = ?", input.Userid, input.Useridconnect).UpdateNotNull()
+
+	if err2 != nil {
+		return nil, errors.New("update usercon error")
+	}
+
+	return &usercon, nil
+}
+
+// CreateConnect is the resolver for the createConnect field.
+func (r *mutationResolver) CreateConnect(ctx context.Context, input model.NewConnect) (*model.Userconnection, error) {
+	usercon := model.Userconnection{
+		Userid:        input.Userid,
+		Useridconnect: input.Useridconnect,
+		Status:        input.Status,
+	}
+
+	_, err := r.DB.Model(&usercon).Insert()
+
+	if err != nil {
+		return nil, errors.New("insert usercon error")
+	}
+
+	return &usercon, nil
+}
+
+// DeleteConnect is the resolver for the deleteConnect field.
+func (r *mutationResolver) DeleteConnect(ctx context.Context, input model.DelConnect) (bool, error) {
+	var usercon model.Userconnection
+
+	_, err2 := r.DB.Model(&usercon).Where("userid = ? AND useridconnect = ?", input.Userid, input.Useridconnect).Delete()
+
+	if err2 != nil {
+		return false, errors.New("delete usercon error")
+	}
+
+	return true, nil
 }
 
 // Countries is the resolver for the countries field.
@@ -270,7 +315,7 @@ func (r *queryResolver) Skills(ctx context.Context) ([]*model.Skill, error) {
 }
 
 // Users is the resolver for the users field.
-func (r *queryResolver) Users(ctx context.Context, email *string, password *string, url *string) ([]*model.User, error) {
+func (r *queryResolver) Users(ctx context.Context, email *string, password *string, url *string, name *string) ([]*model.User, error) {
 	var users []*model.User
 	var err error
 
@@ -280,6 +325,8 @@ func (r *queryResolver) Users(ctx context.Context, email *string, password *stri
 		err = r.DB.Model(&users).Where("email = ?", email).Select()
 	} else if url != nil {
 		err = r.DB.Model(&users).Where("profileurl = ?", url).Select()
+	} else if name != nil {
+		err = r.DB.Model(&users).Where("firstname LIKE ? OR lastname LIKE ?", name, name).Select()
 	} else {
 		err = r.DB.Model(&users).Select()
 	}
@@ -351,6 +398,32 @@ func (r *queryResolver) Jobs(ctx context.Context, userid *string) ([]*model.Job,
 	}
 
 	return jobs, nil
+}
+
+// Educations is the resolver for the educations field.
+func (r *queryResolver) Educations(ctx context.Context) ([]*model.Education, error) {
+	var edus []*model.Education
+
+	err := r.DB.Model(&edus).Select()
+
+	if err != nil {
+		return nil, errors.New("select edus failed")
+	}
+
+	return edus, nil
+}
+
+// Experiences is the resolver for the experiences field.
+func (r *queryResolver) Experiences(ctx context.Context) ([]*model.Experience, error) {
+	var exps []*model.Experience
+
+	err := r.DB.Model(&exps).Select()
+
+	if err != nil {
+		return nil, errors.New("select exps failed")
+	}
+
+	return exps, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

@@ -24,6 +24,7 @@ export default function Header() {
     }
 
     const[dataLoad, setDataLoad] = useState(false)
+    const[input, setInput] = useState("")
     
     const{error, loading, data} = useQuery(GET_USER_BY_URL, {
         variables : { 
@@ -39,6 +40,15 @@ export default function Header() {
             setDataLoad(false)
         }
     }, [loading])
+
+    const search = () => {
+        event?.preventDefault()
+        let query = '%' + input + '%'
+        
+        if(input != "") {
+            navigate('/search/'+query)
+        }
+    }
     
     return (
         <>
@@ -48,9 +58,11 @@ export default function Header() {
                         <img src="/src/assets/linkedin_logo.svg" alt="" />
                     </div>
                     <div className="searchBar">
-                        <form action="">
+                        <form action="" onSubmit={ () => search() }>
                             <i><FaSearch /></i>
-                            <input type="text" name="" id="" placeholder='Search'/>
+                            <input type="text" name="" id="" placeholder='Search' onChange={ (e) => {
+                                setInput(e.target.value)
+                            } }/>
                         </form>
                     </div>
                 </div>

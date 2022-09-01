@@ -12,6 +12,7 @@ import Jobs from "./pages/Jobs"
 import Messaging from "./pages/Messaging"
 import Notification from "./pages/Notification"
 import ProfilePage from "./pages/ProfilePage"
+import SearchPage from "./pages/SearchPage"
 
 const client = new ApolloClient({
   cache: new InMemoryCache(),
@@ -48,6 +49,7 @@ function App() {
               <Route path="/notification" element={<Notification />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/reset-password/:url" element={<ResetPassword />} />
+              <Route path="/search/:input" element={<SearchPage />} />
           </Routes>
       </BrowserRouter>
     </ApolloProvider>

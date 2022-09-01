@@ -18,6 +18,11 @@ type Degree struct {
 	Degreename string `json:"degreename"`
 }
 
+type DelConnect struct {
+	Userid        string `json:"userid"`
+	Useridconnect string `json:"useridconnect"`
+}
+
 type DeleteTemporary struct {
 	URL string `json:"url"`
 }
@@ -82,6 +87,12 @@ type Mediatype struct {
 	Mediatypename string `json:"mediatypename"`
 }
 
+type NewConnect struct {
+	Userid        float64 `json:"userid"`
+	Useridconnect float64 `json:"useridconnect"`
+	Status        bool    `json:"status"`
+}
+
 type NewJob struct {
 	Name     string  `json:"name"`
 	Company  string  `json:"company"`
@@ -144,6 +155,12 @@ type Temporary struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	URL      string `json:"url"`
+}
+
+type UpdateConnect struct {
+	Userid        float64 `json:"userid"`
+	Useridconnect float64 `json:"useridconnect"`
+	Status        bool    `json:"status"`
 }
 
 type User struct {

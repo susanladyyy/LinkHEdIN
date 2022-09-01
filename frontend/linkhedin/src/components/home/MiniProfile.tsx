@@ -12,6 +12,8 @@ export default function miniprofile() {
     const id = cookies['user-login-id']
     const[dataLoad, setDataLoad] = useState(false)
     let navigate = useNavigate()
+    const[inv, setInv] = useState([])
+    const[con, setCon] = useState([])
     const{error, loading, data} = useQuery(GET_USER_BY_URL, {
         variables: {
             url
@@ -39,7 +41,15 @@ export default function miniprofile() {
         else {
             setDataLoad(false)
         }
-    }, [loading])
+
+        if(dataCon) {
+            setCon(dataCon.userconnections)
+        }
+
+        if(dataInv) {
+            setInv(dataInv.userconnections)
+        }
+    }, [loading, dataCon, dataInv])
 
     return (
         <div className='mini-profile'>
@@ -60,7 +70,7 @@ export default function miniprofile() {
                         {loadCon ? 
                             <p className='no-con'>loading...</p>
                             :
-                            <p className='no-con'>{ dataCon['userconnections'].length }</p>
+                            <p className='no-con'>{ con.length }</p>
                         }
                         
                     </div>
@@ -71,7 +81,7 @@ export default function miniprofile() {
                             : 
                             <p className='no-inv' onClick={ () => {
                                 navigate('/my-network')
-                            }}>{ dataInv['userconnections'].length }</p>
+                            }}>{ inv.length }</p>
                         }
                     </div>  
                     <hr />

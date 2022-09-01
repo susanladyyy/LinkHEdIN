@@ -171,6 +171,26 @@ export const GET_USER_BY_URL = gql`
         }
     }
 `
+
+export const SEARCH_USER_BY_NAME = gql`
+    query searchUser (
+        $name: String!
+    ){
+        users (name: $name){
+            id
+            email
+            lastname
+            firstname
+            password
+            activation
+            profileurl
+            profile
+            about
+            headline
+        }
+    }
+`
+
 export const GET_ALL_TEMPS = gql`
     query getAllTemps {
         temporaries {

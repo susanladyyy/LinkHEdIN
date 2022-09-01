@@ -1,6 +1,7 @@
 import React from 'react'
 import Header from '../components/Header'
 import Invitations from '../components/network/Invitations'
+import MightKnow from '../components/network/MightKnow'
 import '../styles/network.scss'
 
 export default function MyNetwork() {
@@ -9,6 +10,8 @@ export default function MyNetwork() {
             <Header />
 
             <Invitations />
+
+            <MightKnow />
         </div>
     )
 }

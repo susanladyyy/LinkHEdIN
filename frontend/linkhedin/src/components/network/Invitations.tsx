@@ -1,14 +1,15 @@
-import { useQuery } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 import { incognito } from '@cloudinary/url-gen/qualifiers/artisticFilter'
 import React, { useEffect, useState } from 'react'
 import { useCookies } from 'react-cookie'
+import { DELETE_CONNECTION } from '../../graphql/Mutation'
 import { GET_ALL_USERS, GET_INVITATION_NUM } from '../../graphql/Queries'
 
 export default function Invitations() {
     const [cookies, setCookie, removeCookie] = useCookies(['user-login', 'user-login-id'])
     const [inv, setInv] = useState([])
     const [user, setUser] = useState([])
-
+    const [deleteConnect] = useMutation(DELETE_CONNECTION)
     let id = cookies['user-login-id']
 
     const{error, loading, data} = useQuery(GET_INVITATION_NUM, {
@@ -21,14 +22,25 @@ export default function Invitations() {
     const{error: errAll, loading: loadAll, data: dataAll} = useQuery(GET_ALL_USERS)
 
     useEffect(() => {
-        if(!loading) {
-            setInv(data.userconnections)
-        }
-
         if(!loadAll) {
             setUser(dataAll.users)
         }
-    }, [loading, loadAll])
+
+        if(data) {
+            setInv(data.userconnections)
+        }
+    }, [data, loadAll])
+
+    const ignoreInv = (idCon: string) => {
+
+        deleteConnect ({
+            variables: {
+                userid: id,
+                useridconnect: idCon
+            }, refetchQueries : [{query: GET_INVITATION_NUM}]
+        })
+
+    }
 
     return (
         <div className='invitations'>
@@ -38,7 +50,7 @@ export default function Invitations() {
                 </div>
                 :
                 <div className="title">
-                    <h3>Invitations</h3>
+                    <h2>Invitations</h2>
                     { loading ? <p>loading...</p> : <p>Pending: { data['userconnections'].length }</p>}
                 </div>
             }
@@ -55,6 +67,10 @@ export default function Invitations() {
                                     </div>
                                     <div className="name">
                                         <p>{e.firstname} {e.lastname}</p>
+                                    </div>
+                                    <div className="button">
+                                        <button className='ignore'>Ignore</button>
+                                        <button className="accept">Accept</button>
                                     </div>
                                 </div>
                                 <div className="acceptance">

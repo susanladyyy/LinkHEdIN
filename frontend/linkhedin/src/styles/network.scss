@@ -5,7 +5,7 @@
     background-color: $linkedin_cream;
     min-height: 100vh;
 
-    .invitations {
+    .invitations, .might-know {
         background-color: $white;
         padding: 10px;
         margin: auto;
@@ -22,12 +22,7 @@
             @include centralizedFlex();
             justify-content: space-between;
             margin: 10px;
-
-            h3 {
-                font-weight: 400;
-                font-size: 1em;
-            }
-
+            
             p {
                 font-size: 0.8em;
                 color: $medium_gray;
@@ -44,6 +39,7 @@
                 .user-data {
                     display: flex;
                     align-items: center;
+                    justify-content: space-between;
 
                     padding: 10px;
 
@@ -56,7 +52,38 @@
                     }
 
                     .name {
-                        margin-left: -45%;
+                        margin-left: -120%;
+                    }
+
+                    .button {
+                        button {
+                            cursor: pointer;
+                            margin-left: 10px;
+                            padding: 8px 20px;
+                            border-radius: 15px;
+                        }
+
+                        button.ignore {
+                            background: none;
+                            border: 1px $medium_gray solid;
+                            color: $medium_gray;
+                        }
+
+                        button.ignore:hover {
+                            background-color: $medium_gray;
+                            color: $white;
+                        }
+
+                        button.accept {
+                            background: none;
+                            border: 1px $linkedin_blue solid;
+                            color: $linkedin_blue;
+                        }
+
+                        button.accept:hover {
+                            background-color: $linkedin_blue;
+                            color: $white;
+                        }
                     }
                 }
 

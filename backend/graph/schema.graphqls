@@ -16,19 +16,13 @@ type Experience {
   id : ID!
   userid : Float!
   title : String!
-  employmenttypeid : Float!
-  industryid : Float!
+  employmentypeid : Float!
   companyname : String!
   location : String!
   startdate : String!
   enddate : String
   description : String
-}
-
-type Experienceskill {
-  id : ID!
-  skillid : Float!
-  experienceid : Float!
+  industry : String!
 }
 
 type Degree {
@@ -48,14 +42,15 @@ type Studyfield {
 
 type Education {
   id : ID!
-  schoolid : Float!
-  degreeid : Float!
-  fieldofstudyid : Float!
-  startdate : String!
-  enddate : String
   grade : Float
   activities : String
   description : String
+  schoolname : String!
+  degreeid : Float!
+  fieldofstudy : String!
+  startdate : String!
+  enddate : String
+  userid : Float!
 }
 
 type Websitetype {
@@ -125,7 +120,6 @@ type User {
   lastname : String!
   additionalname : String
   headline : String!
-  locationid : Float
   usercontactsid : Float
   password : String!
   profile : String
@@ -134,6 +128,7 @@ type User {
   email : String!
   activation : Boolean!
   about : String!
+  locationid : Float
 }
 
 type Userconnection {
@@ -146,12 +141,6 @@ type Userconnection {
 type Usercurrposition {
   id : ID!
   experienceid : String!
-}
-
-type Usereducation {
-  id : ID!
-  userid : Float!
-  educationid : Float!
 }
 
 type Userfollower {
@@ -188,6 +177,19 @@ type Job {
   userid : Float!
 }
 
+type Notification {
+  id : ID!
+  userid : Float!
+  desc : String!
+  date : String!
+}
+
+type Profileview {
+  id : ID!
+  useridviewed : Float!
+  deletestatus : Boolean!
+}
+
 type Query {
   countries: [Country!]!
   cities: [City!]!
@@ -204,11 +206,15 @@ type Query {
   skills: [Skill!]!
   users (email: String, password: String, url: String, name: String): [User!]!
   temporaries (url: String) : [Temporary!]!
-  usereducations (id: ID!): [Usereducation!]!
-  userconnections (id: ID!, status: Boolean) : [Userconnection!]!
+  userconnections (id: Float!, status: Boolean) : [Userconnection!]!
+  userinvitations (id: Float!, status: Boolean) : [Userconnection!]!
+  userfollowing (id: Float!) : [Userfollowing!]!
+  userfollower (id: Float!) : [Userfollower!]!
   jobs (userid: ID): [Job!]!
-  educations: [Education!]!
-  experiences: [Experience!]!
+  notifications: [Notification!]!
+  profileviews (id: Float!): [Profileview!]!
+  educations (id: Float!) : [Education!]!
+  experiences (id: Float!) : [Experience!]!
 }
 
 type Temporary {
@@ -262,8 +268,60 @@ input NewConnect {
 }
 
 input DelConnect {
-  userid : String!
-  useridconnect : String!
+  userid : Float!
+  useridconnect : Float!
+}
+
+input NewNotification {
+  userid : Float!
+  desc : String!
+  date : String!
+}
+
+input NewFollower {
+  userid : Float!
+  useridfollower : Float!
+}
+
+input NewFollowing {
+  userid : Float!
+  useridfollowed : Float!
+}
+
+input NewView {
+  useridviewed : Float!
+}
+
+input NewEducation {
+  grade : Float
+  activities : String
+  description : String
+  schoolname : String!
+  degreeid : Float!
+  fieldofstudy : String!
+  startdate : String!
+  enddate : String
+  userid : Float!
+}
+
+input NewExperience {
+  userid : Float!
+  title : String!
+  employmentypeid : Float!
+  companyname : String!
+  location : String!
+  startdate : String!
+  enddate : String
+  description : String
+  industry : String!
+}
+
+input EditProfile {
+  id : ID!
+  firstname : String!
+  lastname : String!
+  headline : String
+  about : String
 }
 
 type Mutation {
@@ -275,4 +333,16 @@ type Mutation {
   updateConnect(input: UpdateConnect!): Userconnection!
   createConnect(input: NewConnect!): Userconnection!
   deleteConnect(input: DelConnect!) : Boolean!
+  createNotification(input: NewNotification!) : Notification!
+  createFollower(input: NewFollower!) : Userfollower!
+  createFollowing(input: NewFollowing!) : Userfollowing!
+  deleteFollower(input: NewFollower!) : Boolean!
+  deleteFollowing(input: NewFollowing!) : Boolean!
+  createView(input: NewView!) : Profileview!
+  deleteView(status: Boolean!): Boolean!
+  createEducation(input: NewEducation!) : Education!
+  createExperience(input: NewExperience!) : Experience!
+  updateProfile(input: EditProfile!) : User!
+  deleteEducation(id: ID!) : Boolean!
+  deleteExperience(id: ID!) : Boolean!
 }

@@ -201,26 +201,37 @@ export const GET_ALL_TEMPS = gql`
     }
 `
 
-export const GET_ALL_USER_EDUCATION = gql`
-    query getAllUserEdus ($id: ID!){
-        usereducations (id: $id) {
-            id
-            educationid
-        }
-    }
-`
-
-export const GET_INVITATION_NUM = gql`
+export const GET_CONNECTION_NUM = gql`
     query getUserConnection
     (
-        $id:ID!
-        $status:Boolean!
+        $id : Float!
+        $status : Boolean!
     ){
         userconnections (
             id: $id,
             status: $status
         ) {
+            id
+            userid
             useridconnect
+            status
+        }
+    }
+`
+
+export const GET_INVITATION_NUM = gql`
+    query getUserInvitation(
+        $id: Float!,
+        $status: Boolean!
+    ) {
+        userinvitations (
+            id: $id,
+            status: $status
+        ) {
+            id
+            userid
+            useridconnect
+            status
         }
     }
 `
@@ -249,6 +260,100 @@ export const GET_JOB_BY_USER_ID = gql`
             company
             location
             userid
+        }
+    }
+`
+
+export const GET_USER_FOLLOWING = gql`
+    query getUserFollowing(
+        $id:Float!
+    ) {
+        userfollowing (
+            id: $id
+        ) {
+            id
+            userid
+            useridfollowed
+        }
+    }
+`
+
+export const GET_USER_FOLLOWER = gql`
+    query getUserFollower(
+        $id:Float!
+    ) {
+        userfollower (
+            id: $id
+        ) {
+            id
+            userid
+            useridfollower
+        }
+    }
+`
+
+export const GET_NOTIFICATIONS = gql`
+    query getNotifications {
+        notifications {
+            id
+            userid
+            desc
+            date
+        }
+    }
+`
+
+export const GET_PROFILE_VIEWS = gql`
+    query getUserProfileViews(
+        $id: Float!
+    ) {
+        profileviews (
+            id: $id
+        ) {
+            id
+            useridviewed
+        }
+    }
+`
+
+export const GET_USER_EDUCATION = gql`
+    query getUserEducation (
+        $id :Float!
+    ) {
+        educations (
+            id: $id
+        ) {
+            id
+            grade
+            activities
+            description
+            schoolname
+            degreeid
+            fieldofstudy
+            startdate
+            enddate
+            userid
+        }
+    }
+`
+
+export const GET_USER_EXPERIENCE = gql`
+    query getUserExperience (
+        $id: Float!
+    ) {
+        experiences (
+            id: $id
+        ) {
+            id
+            userid
+            title
+            employmentypeid
+            companyname
+            location
+            startdate
+            enddate
+            description
+            industry
         }
     }
 `

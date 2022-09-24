@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react'
 import { useCookies } from 'react-cookie'
+import EditProForm from '../components/edit/EditProForm'
 import Header from '../components/Header'
-import Invitations from '../components/network/Invitations'
-import MightKnow from '../components/network/MightKnow'
-import '../styles/network.scss'
+import '../styles/editprofile.scss'
 
-export default function MyNetwork() {
+export default function EditProfile() {
     const [cookies, setCookie, removeCookie] = useCookies(['user-login'])
 
     useEffect(() => {
@@ -14,15 +13,13 @@ export default function MyNetwork() {
                 location.href = 'http://localhost:5173/login'
             }
         }
-    }, [cookies])  
+    }, [cookies]) 
     
     return (
-        <div className='my-network'>
+        <div className='edit-profile'>
             <Header />
 
-            <Invitations />
-
-            <MightKnow />
+            <EditProForm />
         </div>
     )
 }

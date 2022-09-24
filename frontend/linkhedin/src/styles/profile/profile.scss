@@ -30,7 +30,7 @@
             .profile-image {
                 position: absolute;
                 z-index: 1;
-                top: 15%;
+                top: 12%;
                 left: 5%;
         
                 img {
@@ -49,6 +49,92 @@
                 width: auto;
                 position: relative;
                 top: -3.75px;
+
+                .follow-connect-num {
+                    display: flex;
+                    flex-direction: row;
+                    margin-top: 10px;
+
+                    p {
+                        margin-right: 30px;
+                    }
+                }
+
+                .follow-connect {
+                    display: flex;
+                    .follow, .connect {
+                        margin: 20px 20px 20px 0px;
+
+                        button {
+                            background-color: transparent;
+                            border: $accent_blue solid 1px;
+                            border-radius: 10px;
+                            color: $accent_blue;
+                            padding: 8px 20px;
+                        }
+
+                        button:hover {
+                            background-color: $accent_blue;
+                            border-radius: 10px;
+                            color: $white;
+                            cursor: pointer;
+                        }
+                    }
+
+                    .withdraw {
+                        margin: 20px 20px 20px 0px;
+                        
+                        button {
+                            background-color: transparent;
+                            border: $dark_gray solid 1px;
+                            border-radius: 10px;
+                            color: $dark_gray;
+                            padding: 8px 20px;
+                        }
+
+                        button:hover {
+                            background-color: $dark_gray;
+                            border-radius: 10px;
+                            color: $white;
+                            cursor: pointer;
+                        }
+                    }
+
+                    .following, .connection {
+                        margin: 20px 20px 20px 0px;
+                        button {
+                            border: $accent_blue solid 1px;
+                            padding: 8px 20px;
+                            background-color: $accent_blue;
+                            border-radius: 10px;
+                            color: $white;
+                            cursor: pointer;
+                        }
+                    }
+
+                    .following {
+                        button:hover {
+                            border: $accent_red solid 1px;
+                            color: $white;
+                            background-color: $accent_red;
+                        }
+
+                        button::after {
+                            content: "Following";
+                        }
+
+                        button:hover::after {
+                            content: "Unfollow";
+                        }
+                    }
+                }
+
+                .connections a {
+                    color: $accent_blue;
+                    font-weight: 600;
+                    margin: 10px 0px;
+                    text-decoration: none;
+                }
             }
         }
 
@@ -62,6 +148,74 @@
             padding: 20px;
 
             .title-about {
+                font-size: 1.4em;
+                font-weight: 550;
+                margin-bottom: 25px;
+            }
+        }
+
+        .experience {
+            padding: 20px;
+
+            h1 {
+                font-size: 1.4em;
+                font-weight: 550;
+                margin-bottom: 25px;
+            }
+
+            .experienceList {
+                margin: 5px;
+
+                hr {
+                    margin: 10px 0px;
+                }
+
+                p {
+                    padding: 5px 0px;
+                }
+            }
+        }
+
+        .education {
+            padding: 20px;
+
+            h1{
+                font-size: 1.4em;
+                font-weight: 550;
+                margin-bottom: 25px;
+            }
+
+            .educationList {
+                margin: 5px;
+
+                hr {
+                    margin: 10px 0px;
+                }
+
+                hr.hr-bottom {
+                    margin: 0px 0px;
+                }
+
+                p {
+                    padding: 5px 0px;
+                }
+            }
+        }
+
+        .skill {
+            padding: 20px;
+
+            h1{
+                font-size: 1.4em;
+                font-weight: 550;
+                margin-bottom: 25px;
+            }
+        }
+
+        .interest {
+            padding: 20px;
+
+            h1{
                 font-size: 1.4em;
                 font-weight: 550;
                 margin-bottom: 25px;
@@ -97,6 +251,11 @@
             float: right;
         }
 
+        .edit-icon a {
+            color: $dark_gray;
+            float: right;
+        }
+
         .edit-icon:hover {
             color: black;
             cursor: pointer;
@@ -106,10 +265,22 @@
     .right-profile {
         width: 30%;
         margin-left: 20px;
-        .edit-profile, .jobs-profile, .people-also-viewed {
+        .edit-pro, .jobs-profile {
             background-color: $white;
             border-radius: 10px;
             margin-bottom: 10px;
+        }
+
+        .edit-pro {
+            h1 {
+                padding: 10px;
+            }
+            a {
+                font-size: 0.6em;
+                font-weight: 550;
+                text-decoration: none;
+                color: black;
+            }
         }
 
         .jobs-profile {

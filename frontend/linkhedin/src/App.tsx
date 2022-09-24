@@ -13,6 +13,9 @@ import Messaging from "./pages/Messaging"
 import Notification from "./pages/Notification"
 import ProfilePage from "./pages/ProfilePage"
 import SearchPage from "./pages/SearchPage"
+import EditEducation from "./pages/EditEducation"
+import EditExperience from "./pages/EditExperience"
+import EditProfile from "./pages/EditProfile"
 
 const client = new ApolloClient({
   cache: new InMemoryCache(),
@@ -47,9 +50,12 @@ function App() {
               <Route path="/jobs" element={<Jobs />} />
               <Route path="/messaging" element={<Messaging />} />
               <Route path="/notification" element={<Notification />} />
-              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/profile/:profile" element={<ProfilePage />} />
               <Route path="/reset-password/:url" element={<ResetPassword />} />
               <Route path="/search/:input" element={<SearchPage />} />
+              <Route path="/edit-education" element={<EditEducation/>} />
+              <Route path="/edit-experience" element={<EditExperience/>} />
+              <Route path="/edit-profile" element={<EditProfile/>} />
           </Routes>
       </BrowserRouter>
     </ApolloProvider>

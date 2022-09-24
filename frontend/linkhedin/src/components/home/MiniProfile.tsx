@@ -3,7 +3,7 @@ import { MdBookmark } from 'react-icons/md'
 import { IoMdAdd } from 'react-icons/io'
 import { useCookies } from 'react-cookie'
 import { useQuery } from '@apollo/client'
-import { GET_INVITATION_NUM, GET_USER_BY_URL } from '../../graphql/Queries'
+import { GET_CONNECTION_NUM, GET_INVITATION_NUM, GET_USER_BY_URL } from '../../graphql/Queries'
 import { useNavigate } from 'react-router-dom'
 
 export default function miniprofile() {
@@ -20,7 +20,7 @@ export default function miniprofile() {
         }
     })
 
-    const{error: errCon, loading: loadCon, data: dataCon} = useQuery(GET_INVITATION_NUM, {
+    const{error: errCon, loading: loadCon, data: dataCon} = useQuery(GET_CONNECTION_NUM, {
         variables: {
             id : id,
             status : true,
@@ -47,7 +47,7 @@ export default function miniprofile() {
         }
 
         if(dataInv) {
-            setInv(dataInv.userconnections)
+            setInv(dataInv.userinvitations)
         }
     }, [loading, dataCon, dataInv])
 

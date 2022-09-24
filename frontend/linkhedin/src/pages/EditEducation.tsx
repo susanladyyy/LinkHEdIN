@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react'
 import { useCookies } from 'react-cookie'
+import EditEduForm from '../components/edit/EditEduForm'
 import Header from '../components/Header'
-import Invitations from '../components/network/Invitations'
-import MightKnow from '../components/network/MightKnow'
-import '../styles/network.scss'
+import '../styles/editeducation.scss'
 
-export default function MyNetwork() {
+export default function EditEducation() {
     const [cookies, setCookie, removeCookie] = useCookies(['user-login'])
 
     useEffect(() => {
@@ -17,12 +16,10 @@ export default function MyNetwork() {
     }, [cookies])  
     
     return (
-        <div className='my-network'>
+        <div className='edit-education'>
             <Header />
 
-            <Invitations />
-
-            <MightKnow />
+            <EditEduForm />
         </div>
     )
 }

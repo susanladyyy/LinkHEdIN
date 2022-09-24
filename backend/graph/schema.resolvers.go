@@ -145,6 +145,199 @@ func (r *mutationResolver) DeleteConnect(ctx context.Context, input model.DelCon
 	return true, nil
 }
 
+// CreateNotification is the resolver for the createNotification field.
+func (r *mutationResolver) CreateNotification(ctx context.Context, input model.NewNotification) (*model.Notification, error) {
+	notif := model.Notification{
+		Userid: input.Userid,
+		Desc:   input.Desc,
+		Date:   input.Date,
+	}
+
+	_, err := r.DB.Model(&notif).Insert()
+
+	if err != nil {
+		return nil, errors.New("insert notif error")
+	}
+
+	return &notif, nil
+}
+
+// CreateFollower is the resolver for the createFollower field.
+func (r *mutationResolver) CreateFollower(ctx context.Context, input model.NewFollower) (*model.Userfollower, error) {
+	follower := model.Userfollower{
+		Userid:         input.Userid,
+		Useridfollower: input.Useridfollower,
+	}
+
+	_, err := r.DB.Model(&follower).Insert()
+
+	if err != nil {
+		return nil, errors.New("insert follower error")
+	}
+
+	return &follower, nil
+}
+
+// CreateFollowing is the resolver for the createFollowing field.
+func (r *mutationResolver) CreateFollowing(ctx context.Context, input model.NewFollowing) (*model.Userfollowing, error) {
+	following := model.Userfollowing{
+		Userid:         input.Userid,
+		Useridfollowed: input.Useridfollowed,
+	}
+
+	_, err := r.DB.Model(&following).Insert()
+
+	if err != nil {
+		return nil, errors.New("insert following error")
+	}
+
+	return &following, nil
+}
+
+// DeleteFollower is the resolver for the deleteFollower field.
+func (r *mutationResolver) DeleteFollower(ctx context.Context, input model.NewFollower) (bool, error) {
+	var follower model.Userfollower
+
+	_, err2 := r.DB.Model(&follower).Where("userid = ? AND useridfollower = ?", input.Userid, input.Useridfollower).Delete()
+
+	if err2 != nil {
+		return false, errors.New("delete follower error")
+	}
+
+	return true, nil
+}
+
+// DeleteFollowing is the resolver for the deleteFollowing field.
+func (r *mutationResolver) DeleteFollowing(ctx context.Context, input model.NewFollowing) (bool, error) {
+	var following model.Userfollowing
+
+	_, err2 := r.DB.Model(&following).Where("userid = ? AND useridfollowed = ?", input.Userid, input.Useridfollowed).Delete()
+
+	if err2 != nil {
+		return false, errors.New("delete following error")
+	}
+
+	return true, nil
+}
+
+// CreateView is the resolver for the createView field.
+func (r *mutationResolver) CreateView(ctx context.Context, input model.NewView) (*model.Profileview, error) {
+	view := model.Profileview{
+		Useridviewed: input.Useridviewed,
+	}
+
+	_, err := r.DB.Model(&view).Insert()
+
+	if err != nil {
+		return nil, errors.New("insert view failed")
+	}
+
+	return &view, nil
+}
+
+// DeleteView is the resolver for the deleteView field.
+func (r *mutationResolver) DeleteView(ctx context.Context, status bool) (bool, error) {
+	var view model.Profileview
+
+	_, err := r.DB.Model(&view).Where("deletestatus = ?", status).Delete()
+
+	if err != nil {
+		return false, errors.New("delete views failed")
+	}
+
+	return true, nil
+}
+
+// CreateEducation is the resolver for the createEducation field.
+func (r *mutationResolver) CreateEducation(ctx context.Context, input model.NewEducation) (*model.Education, error) {
+	education := model.Education{
+		Grade:        input.Grade,
+		Activities:   input.Activities,
+		Description:  input.Description,
+		Schoolname:   input.Schoolname,
+		Degreeid:     input.Degreeid,
+		Fieldofstudy: input.Fieldofstudy,
+		Startdate:    input.Startdate,
+		Enddate:      input.Enddate,
+		Userid:       input.Userid,
+	}
+
+	_, err := r.DB.Model(&education).Insert()
+
+	if err != nil {
+		return nil, errors.New("insert education failed")
+	}
+
+	return &education, nil
+}
+
+// CreateExperience is the resolver for the createExperience field.
+func (r *mutationResolver) CreateExperience(ctx context.Context, input model.NewExperience) (*model.Experience, error) {
+	experience := model.Experience{
+		Userid:          input.Userid,
+		Title:           input.Title,
+		Employmentypeid: input.Employmentypeid,
+		Companyname:     input.Companyname,
+		Location:        input.Location,
+		Startdate:       input.Startdate,
+		Enddate:         input.Enddate,
+		Description:     input.Description,
+		Industry:        input.Industry,
+	}
+
+	_, err := r.DB.Model(&experience).Insert()
+
+	if err != nil {
+		return nil, errors.New("insert experience failed")
+	}
+
+	return &experience, nil
+}
+
+// UpdateProfile is the resolver for the updateProfile field.
+func (r *mutationResolver) UpdateProfile(ctx context.Context, input model.EditProfile) (*model.User, error) {
+	var upd model.User
+
+	upd.Firstname = input.Firstname
+	upd.Lastname = input.Lastname
+	upd.Headline = *input.Headline
+	upd.About = *input.About
+
+	_, err2 := r.DB.Model(&upd).Where("id = ?", input.ID).UpdateNotNull()
+
+	if err2 != nil {
+		return nil, errors.New("update profile error")
+	}
+
+	return &upd, nil
+}
+
+// DeleteEducation is the resolver for the deleteEducation field.
+func (r *mutationResolver) DeleteEducation(ctx context.Context, id string) (bool, error) {
+	var edu model.Education
+
+	_, err := r.DB.Model(&edu).Where("id = ?", id).Delete()
+
+	if err != nil {
+		return false, errors.New("delete education failed")
+	}
+
+	return true, nil
+}
+
+// DeleteExperience is the resolver for the deleteExperience field.
+func (r *mutationResolver) DeleteExperience(ctx context.Context, id string) (bool, error) {
+	var exp model.Experience
+
+	_, err := r.DB.Model(&exp).Where("id = ?", id).Delete()
+
+	if err != nil {
+		return false, errors.New("delete experience failed")
+	}
+
+	return true, nil
+}
+
 // Countries is the resolver for the countries field.
 func (r *queryResolver) Countries(ctx context.Context) ([]*model.Country, error) {
 	var countries []*model.Country
@@ -356,21 +549,8 @@ func (r *queryResolver) Temporaries(ctx context.Context, url *string) ([]*model.
 	return temps, nil
 }
 
-// Usereducations is the resolver for the usereducations field.
-func (r *queryResolver) Usereducations(ctx context.Context, id string) ([]*model.Usereducation, error) {
-	var useredus []*model.Usereducation
-
-	err := r.DB.Model(&useredus).Where("userid = ?", id).Select()
-
-	if err != nil {
-		return nil, errors.New("select edus failed")
-	}
-
-	return useredus, nil
-}
-
 // Userconnections is the resolver for the userconnections field.
-func (r *queryResolver) Userconnections(ctx context.Context, id string, status *bool) ([]*model.Userconnection, error) {
+func (r *queryResolver) Userconnections(ctx context.Context, id float64, status *bool) ([]*model.Userconnection, error) {
 	var usercons []*model.Userconnection
 
 	err := r.DB.Model(&usercons).Where("userid = ? and status = ?", id, status).Select()
@@ -380,6 +560,45 @@ func (r *queryResolver) Userconnections(ctx context.Context, id string, status *
 	}
 
 	return usercons, nil
+}
+
+// Userinvitations is the resolver for the userinvitations field.
+func (r *queryResolver) Userinvitations(ctx context.Context, id float64, status *bool) ([]*model.Userconnection, error) {
+	var userinvs []*model.Userconnection
+
+	err := r.DB.Model(&userinvs).Where("useridconnect = ? and status = ?", id, status).Select()
+
+	if err != nil {
+		return nil, errors.New("select invs failed")
+	}
+
+	return userinvs, nil
+}
+
+// Userfollowing is the resolver for the userfollowing field.
+func (r *queryResolver) Userfollowing(ctx context.Context, id float64) ([]*model.Userfollowing, error) {
+	var userfol []*model.Userfollowing
+
+	err := r.DB.Model(&userfol).Where("userid = ?", id).Select()
+
+	if err != nil {
+		return nil, errors.New("select following failed")
+	}
+
+	return userfol, nil
+}
+
+// Userfollower is the resolver for the userfollower field.
+func (r *queryResolver) Userfollower(ctx context.Context, id float64) ([]*model.Userfollower, error) {
+	var userfol []*model.Userfollower
+
+	err := r.DB.Model(&userfol).Where("userid = ?", id).Select()
+
+	if err != nil {
+		return nil, errors.New("select follower failed")
+	}
+
+	return userfol, nil
 }
 
 // Jobs is the resolver for the jobs field.
@@ -400,11 +619,37 @@ func (r *queryResolver) Jobs(ctx context.Context, userid *string) ([]*model.Job,
 	return jobs, nil
 }
 
+// Notifications is the resolver for the notifications field.
+func (r *queryResolver) Notifications(ctx context.Context) ([]*model.Notification, error) {
+	var notifs []*model.Notification
+
+	err := r.DB.Model(&notifs).Select()
+
+	if err != nil {
+		return nil, errors.New("select notifications failed")
+	}
+
+	return notifs, nil
+}
+
+// Profileviews is the resolver for the profileviews field.
+func (r *queryResolver) Profileviews(ctx context.Context, id float64) ([]*model.Profileview, error) {
+	var views []*model.Profileview
+
+	err := r.DB.Model(&views).Where("useridviewed = ?", id).Select()
+
+	if err != nil {
+		return nil, errors.New("select views failed")
+	}
+
+	return views, nil
+}
+
 // Educations is the resolver for the educations field.
-func (r *queryResolver) Educations(ctx context.Context) ([]*model.Education, error) {
+func (r *queryResolver) Educations(ctx context.Context, id float64) ([]*model.Education, error) {
 	var edus []*model.Education
 
-	err := r.DB.Model(&edus).Select()
+	err := r.DB.Model(&edus).Where("userid = ?", id).Select()
 
 	if err != nil {
 		return nil, errors.New("select edus failed")
@@ -414,10 +659,10 @@ func (r *queryResolver) Educations(ctx context.Context) ([]*model.Education, err
 }
 
 // Experiences is the resolver for the experiences field.
-func (r *queryResolver) Experiences(ctx context.Context) ([]*model.Experience, error) {
+func (r *queryResolver) Experiences(ctx context.Context, id float64) ([]*model.Experience, error) {
 	var exps []*model.Experience
 
-	err := r.DB.Model(&exps).Select()
+	err := r.DB.Model(&exps).Where("userid = ?", id).Select()
 
 	if err != nil {
 		return nil, errors.New("select exps failed")

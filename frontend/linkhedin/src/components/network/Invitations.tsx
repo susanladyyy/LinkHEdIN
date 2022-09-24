@@ -1,8 +1,8 @@
 import { useMutation, useQuery } from '@apollo/client'
-import { incognito } from '@cloudinary/url-gen/qualifiers/artisticFilter'
 import React, { useEffect, useState } from 'react'
 import { useCookies } from 'react-cookie'
-import { DELETE_CONNECTION } from '../../graphql/Mutation'
+import { Link } from 'react-router-dom'
+import { DELETE_CONNECTION, INSERT_CONNECTION, UPDATE_CONNECTION } from '../../graphql/Mutation'
 import { GET_ALL_USERS, GET_INVITATION_NUM } from '../../graphql/Queries'
 
 export default function Invitations() {
@@ -10,6 +10,9 @@ export default function Invitations() {
     const [inv, setInv] = useState([])
     const [user, setUser] = useState([])
     const [deleteConnect] = useMutation(DELETE_CONNECTION)
+    const [insertConnect] = useMutation(INSERT_CONNECTION)
+    const [updateConnect] = useMutation(UPDATE_CONNECTION)
+
     let id = cookies['user-login-id']
 
     const{error, loading, data} = useQuery(GET_INVITATION_NUM, {
@@ -27,7 +30,7 @@ export default function Invitations() {
         }
 
         if(data) {
-            setInv(data.userconnections)
+            setInv(data.userinvitations)
         }
     }, [data, loadAll])
 
@@ -35,13 +38,36 @@ export default function Invitations() {
 
         deleteConnect ({
             variables: {
-                userid: id,
-                useridconnect: idCon
-            }, refetchQueries : [{query: GET_INVITATION_NUM}]
+                userid: idCon,
+                useridconnect: id,
+            }
         })
 
+        location.reload()
     }
 
+    const acceptInv = (idCon : string) => {
+
+        updateConnect ({
+            variables: {
+                userid: idCon,
+                useridconnect: id
+            }
+        })
+
+        insertConnect ({
+            variables: {
+                userid: id,
+                useridconnect: idCon,
+                status: true
+            }
+        })
+
+        location.reload()
+    }
+
+    console.log(inv)
+    
     return (
         <div className='invitations'>
             { inv.length == 0 ? 
@@ -51,14 +77,14 @@ export default function Invitations() {
                 :
                 <div className="title">
                     <h2>Invitations</h2>
-                    { loading ? <p>loading...</p> : <p>Pending: { data['userconnections'].length }</p>}
+                    { loading ? <p>loading...</p> : <p>Pending: { data['userinvitations'].length }</p>}
                 </div>
             }
 
             <hr />
             <div className="invitation-list">
                 {user.length == 0 ? <h1>Loading...</h1> : user.map((e) => {
-                    if(inv.some(item => item.useridconnect == e.id)) {
+                    if(inv.some(item => item.userid == e.id)) {
                         return (
                             <div className="profile-item" key={e.id}>
                                 <div className="user-data">
@@ -66,11 +92,11 @@ export default function Invitations() {
                                         <img src="src/assets/default-profile-photo.jpg" alt="" />
                                     </div>
                                     <div className="name">
-                                        <p>{e.firstname} {e.lastname}</p>
+                                        <p><Link to={`/profile/${e.profileurl}`}>{e.firstname} {e.lastname}</Link></p>
                                     </div>
                                     <div className="button">
-                                        <button className='ignore'>Ignore</button>
-                                        <button className="accept">Accept</button>
+                                        <button className='ignore' onClick={ () => ignoreInv(e.id) }>Ignore</button>
+                                        <button className="accept" onClick={ () => acceptInv(e.id) }>Accept</button>
                                     </div>
                                 </div>
                                 <div className="acceptance">

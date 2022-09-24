@@ -3,8 +3,8 @@ import React, { useState } from 'react'
 import { useCookies } from 'react-cookie'
 import { BsPencilSquare } from 'react-icons/bs'
 import { GrClose } from 'react-icons/gr'
-import { INSERT_JOB } from '../../graphql/Mutation'
-import { GET_ALL_JOBS } from '../../graphql/Queries'
+import { INSERT_JOB, INSERT_NOTIFICATION } from '../../graphql/Mutation'
+import { GET_ALL_JOBS, GET_NOTIFICATIONS, GET_USER_BY_URL } from '../../graphql/Queries'
 
 export default function PostJob() {
     const[showModal, setShowModal] = useState(false)
@@ -13,9 +13,17 @@ export default function PostJob() {
     const[company, setCompany] = useState("")
     const[location, setLocation] = useState("")
     const[createJob] = useMutation(INSERT_JOB)
-    const{error, loading, data} = useQuery(GET_ALL_JOBS)
+    const[createNotif] = useMutation(INSERT_NOTIFICATION)
+
     const[cookies, setCookie, removeCookie] = useCookies(['user-login', 'user-login-id'])
     const id = cookies['user-login-id']
+    const url = cookies['user-login']
+
+    const{error, loading, data} = useQuery(GET_USER_BY_URL, {
+        variables: {
+            url
+        }
+    })
 
     const show = (showModal: boolean) => {
         showModal ? setShowModal(false) : setShowModal(true)
@@ -47,6 +55,17 @@ export default function PostJob() {
             }, 
             
             refetchQueries: [{ query: GET_ALL_JOBS }]
+        })
+
+        let text = data['users'][0].firstname + " " + data['users'][0].lastname + " posted a job offer: " + name + ", " + company
+        let curr = new Date().toUTCString() + ""
+
+        createNotif ({
+            variables: {
+                userid: id,
+                desc: text,
+                date: curr,
+            }, refetchQueries: [{query: GET_NOTIFICATIONS}]
         })
 
         setShowModal(false)

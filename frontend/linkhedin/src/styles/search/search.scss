@@ -20,6 +20,34 @@
                 border-radius: 30px;
                 color: $linkedin_blue;
                 cursor: pointer;
+                margin: 0px 10px;
+            }
+
+            button.withdraw {
+                background-color: $white;
+                color: $medium_gray;
+                border: solid 1px $medium_gray
+            }
+
+            button:hover {
+                background-color: $accent_blue;
+                color: $white;
+                border: none;
+            }
+
+            button.withdraw:hover {
+                background-color: $light_gray;
+                color: $dark_gray;
+                border: none;
+            }
+            
+            p {
+                padding: 10px 0px;
+                color: $linkedin_blue;
+            }
+
+            p.withdraw {
+                color: $medium_gray;
             }
 
             h1 {

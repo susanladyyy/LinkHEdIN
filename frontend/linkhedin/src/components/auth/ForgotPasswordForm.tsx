@@ -17,8 +17,6 @@ export default function ForgotPasswordForm() {
     
     const {error: allError, loading: allLoad, data: allData} = useQuery(GET_ALL_USERS)
 
-    console.log(allData)
-
     const SubmitForm = () => {
         if(email == "") {
             setErrorMsg("Email must be filled")
@@ -36,12 +34,15 @@ export default function ForgotPasswordForm() {
             return
         }
 
-        for (let index = 0; index < allData.length; index++) {
+        for (let index = 0; index < allData['users'].length; index++) {
+            console.log(allData['users'][index].email == email + " " + index)
             if(allData['users'][index].email == email) {
                 setIdx(index)
                 break
             }
         }
+
+        console.log(idx)
 
         setErrorMsg("")
     }

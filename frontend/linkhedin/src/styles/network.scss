@@ -52,7 +52,13 @@
                     }
 
                     .name {
-                        margin-left: -120%;
+                        margin-left: -105%;
+
+                        a {
+                            text-decoration: none;
+                            color: $black;
+                            cursor: pointer;
+                        }
                     }
 
                     .button {
@@ -89,6 +95,70 @@
 
                 hr {
                     margin: 10px 0px;
+                }
+            }
+        }
+    }
+
+    .might-know {
+        .invitation-list {
+            .profile-item {
+                .user-data {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+
+                    padding: 10px;
+
+                    .profile-image {
+                        img {
+                            width: 8%;
+                            height: auto;
+                            border-radius: 50%;
+                        }
+                    }
+
+                    .name {
+                        width: 30%;
+                    }
+
+                    .buttons {
+                        .follow, .connect {
+                            button {
+                                cursor: pointer;
+                                margin-left: 10px;
+                                margin-bottom: 5px;
+                                padding: 8px 10px;
+                                border-radius: 15px;
+                                background: none;
+                                border: 1px $linkedin_blue solid;
+                                color: $linkedin_blue;
+                            }
+
+                            button:hover {
+                                background-color: $linkedin_blue;
+                                color: $white;
+                            }
+                        }
+
+                        .unfollow {
+                            button {
+                                cursor: pointer;
+                                margin-left: 10px;
+                                margin-bottom: 5px;
+                                padding: 8px 10px;
+                                border-radius: 15px;
+                                background: none;
+                                border: 1px $accent_red solid;
+                                color: $accent_red;
+                            }
+
+                            button:hover {
+                                background-color: $accent_red;
+                                color: $white;
+                            }
+                        }
+                    }
                 }
             }
         }

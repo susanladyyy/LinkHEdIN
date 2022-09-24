@@ -19,24 +19,33 @@ type Degree struct {
 }
 
 type DelConnect struct {
-	Userid        string `json:"userid"`
-	Useridconnect string `json:"useridconnect"`
+	Userid        float64 `json:"userid"`
+	Useridconnect float64 `json:"useridconnect"`
 }
 
 type DeleteTemporary struct {
 	URL string `json:"url"`
 }
 
+type EditProfile struct {
+	ID        string  `json:"id"`
+	Firstname string  `json:"firstname"`
+	Lastname  string  `json:"lastname"`
+	Headline  *string `json:"headline"`
+	About     *string `json:"about"`
+}
+
 type Education struct {
-	ID             string   `json:"id"`
-	Schoolid       float64  `json:"schoolid"`
-	Degreeid       float64  `json:"degreeid"`
-	Fieldofstudyid float64  `json:"fieldofstudyid"`
-	Startdate      string   `json:"startdate"`
-	Enddate        *string  `json:"enddate"`
-	Grade          *float64 `json:"grade"`
-	Activities     *string  `json:"activities"`
-	Description    *string  `json:"description"`
+	ID           string   `json:"id"`
+	Grade        *float64 `json:"grade"`
+	Activities   *string  `json:"activities"`
+	Description  *string  `json:"description"`
+	Schoolname   string   `json:"schoolname"`
+	Degreeid     float64  `json:"degreeid"`
+	Fieldofstudy string   `json:"fieldofstudy"`
+	Startdate    string   `json:"startdate"`
+	Enddate      *string  `json:"enddate"`
+	Userid       float64  `json:"userid"`
 }
 
 type Employmenttype struct {
@@ -45,22 +54,16 @@ type Employmenttype struct {
 }
 
 type Experience struct {
-	ID               string  `json:"id"`
-	Userid           float64 `json:"userid"`
-	Title            string  `json:"title"`
-	Employmenttypeid float64 `json:"employmenttypeid"`
-	Industryid       float64 `json:"industryid"`
-	Companyname      string  `json:"companyname"`
-	Location         string  `json:"location"`
-	Startdate        string  `json:"startdate"`
-	Enddate          *string `json:"enddate"`
-	Description      *string `json:"description"`
-}
-
-type Experienceskill struct {
-	ID           string  `json:"id"`
-	Skillid      float64 `json:"skillid"`
-	Experienceid float64 `json:"experienceid"`
+	ID              string  `json:"id"`
+	Userid          float64 `json:"userid"`
+	Title           string  `json:"title"`
+	Employmentypeid float64 `json:"employmentypeid"`
+	Companyname     string  `json:"companyname"`
+	Location        string  `json:"location"`
+	Startdate       string  `json:"startdate"`
+	Enddate         *string `json:"enddate"`
+	Description     *string `json:"description"`
+	Industry        string  `json:"industry"`
 }
 
 type Industry struct {
@@ -93,11 +96,51 @@ type NewConnect struct {
 	Status        bool    `json:"status"`
 }
 
+type NewEducation struct {
+	Grade        *float64 `json:"grade"`
+	Activities   *string  `json:"activities"`
+	Description  *string  `json:"description"`
+	Schoolname   string   `json:"schoolname"`
+	Degreeid     float64  `json:"degreeid"`
+	Fieldofstudy string   `json:"fieldofstudy"`
+	Startdate    string   `json:"startdate"`
+	Enddate      *string  `json:"enddate"`
+	Userid       float64  `json:"userid"`
+}
+
+type NewExperience struct {
+	Userid          float64 `json:"userid"`
+	Title           string  `json:"title"`
+	Employmentypeid float64 `json:"employmentypeid"`
+	Companyname     string  `json:"companyname"`
+	Location        string  `json:"location"`
+	Startdate       string  `json:"startdate"`
+	Enddate         *string `json:"enddate"`
+	Description     *string `json:"description"`
+	Industry        string  `json:"industry"`
+}
+
+type NewFollower struct {
+	Userid         float64 `json:"userid"`
+	Useridfollower float64 `json:"useridfollower"`
+}
+
+type NewFollowing struct {
+	Userid         float64 `json:"userid"`
+	Useridfollowed float64 `json:"useridfollowed"`
+}
+
 type NewJob struct {
 	Name     string  `json:"name"`
 	Company  string  `json:"company"`
 	Location string  `json:"location"`
 	Userid   float64 `json:"userid"`
+}
+
+type NewNotification struct {
+	Userid float64 `json:"userid"`
+	Desc   string  `json:"desc"`
+	Date   string  `json:"date"`
 }
 
 type NewPass struct {
@@ -120,9 +163,26 @@ type NewUser struct {
 	Activation bool   `json:"activation"`
 }
 
+type NewView struct {
+	Useridviewed float64 `json:"useridviewed"`
+}
+
+type Notification struct {
+	ID     string  `json:"id"`
+	Userid float64 `json:"userid"`
+	Desc   string  `json:"desc"`
+	Date   string  `json:"date"`
+}
+
 type Phonetype struct {
 	ID            string `json:"id"`
 	Phonetypename string `json:"phonetypename"`
+}
+
+type Profileview struct {
+	ID           string  `json:"id"`
+	Useridviewed float64 `json:"useridviewed"`
+	Deletestatus bool    `json:"deletestatus"`
 }
 
 type Pronoun struct {
@@ -170,7 +230,6 @@ type User struct {
 	Lastname       string   `json:"lastname"`
 	Additionalname *string  `json:"additionalname"`
 	Headline       string   `json:"headline"`
-	Locationid     *float64 `json:"locationid"`
 	Usercontactsid *float64 `json:"usercontactsid"`
 	Password       string   `json:"password"`
 	Profile        *string  `json:"profile"`
@@ -179,6 +238,7 @@ type User struct {
 	Email          string   `json:"email"`
 	Activation     bool     `json:"activation"`
 	About          string   `json:"about"`
+	Locationid     *float64 `json:"locationid"`
 }
 
 type Userconnection struct {
@@ -198,12 +258,6 @@ type Usercontact struct {
 type Usercurrposition struct {
 	ID           string `json:"id"`
 	Experienceid string `json:"experienceid"`
-}
-
-type Usereducation struct {
-	ID          string  `json:"id"`
-	Userid      float64 `json:"userid"`
-	Educationid float64 `json:"educationid"`
 }
 
 type Userfollower struct {

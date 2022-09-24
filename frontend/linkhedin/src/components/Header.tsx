@@ -7,19 +7,27 @@ import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { useCookies } from 'react-cookie'
 import { FiLogOut } from 'react-icons/fi'
-import { useQuery } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 import { GET_USER_BY_URL } from '../graphql/Queries'
 import { GiHamburgerMenu } from 'react-icons/gi'
+import { DELETE_VIEWS } from '../graphql/Mutation'
 
 export default function Header() {
     const [cookies, setCookie, removeCookie] = useCookies(['user-login'])
     const url = cookies['user-login']
     const navigate = useNavigate()
+    const[deleteViews] = useMutation(DELETE_VIEWS)
 
     const logout = () => {
         if(cookies['user-login']) {
             removeCookie('user-login')
             navigate('/login')
+
+            // deleteViews({
+            //     variables: {
+            //         deletestatus: true
+            //     }
+            // })
         }
     }
 
@@ -43,10 +51,9 @@ export default function Header() {
 
     const search = () => {
         event?.preventDefault()
-        let query = '%' + input + '%'
         
         if(input != "") {
-            navigate('/search/'+query)
+            navigate('/search/' + input)
         }
     }
     
@@ -118,7 +125,7 @@ export default function Header() {
                                 { dataLoad ? (data['users'][0].profile ? <img src="" alt="" /> : <img src="/src/assets/default-profile-photo.jpg" alt="" />) : null}
                             </div>
                             <div className="menu-name">
-                                <p><Link to={'/profile'}>Me</Link></p>
+                                <p><Link to={'/profile/me'}>Me</Link></p>
                             </div>
                         </li>
                         <li>

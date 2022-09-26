@@ -223,8 +223,18 @@
                     }
     
                     .card-header {
-                        p {
-                            padding: 5px 10px;
+                        .user-info {
+                            display: flex;
+                            flex-direction: row;
+                            align-items: center;
+
+                            img {
+                                border-radius: 50%;
+                                padding: 5px 10px;
+                            }
+                            p {
+                                padding: 5px 10px;
+                            }
                         }
                     }
     
@@ -245,11 +255,7 @@
                         }
                     }
     
-                    .card-footer {
-                        // display: flex;
-                        // flex-direction: row;
-                        // justify-content: space-between;
-    
+                    .card-footer {    
                         .comment, .likes {
                             color: $dark_gray;
                             font-weight: 600;
@@ -264,6 +270,48 @@
     
                         .comment a:hover {
                             color: $accent_blue;
+                        }
+
+                        .comment-list {
+                            padding: 10px;
+                            height: 200px;
+                            overflow: scroll;
+
+                            p {
+                                padding: 5px 15px;
+                            }
+
+                            .user-info {
+                                display: flex;
+                                flex-direction: row;
+                                align-items: center;
+    
+                                img {
+                                    border-radius: 50%;
+                                    padding: 5px 10px;
+                                }
+                                p {
+                                    padding: 5px 10px;
+                                }
+                            }
+                        }
+
+                        .new-comment {
+                            display: flex;
+                            flex-direction: column;
+                            
+                            textarea {
+                                margin: 10px 0px;
+                            }
+
+                            input {
+                                background-color: $accent_blue;
+                                cursor: pointer;
+                                border-radius: 10px;
+                                padding: 10px;
+                                border: none;
+                                color: white;
+                            }
                         }
                     }
                 }

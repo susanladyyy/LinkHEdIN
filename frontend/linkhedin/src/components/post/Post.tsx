@@ -4,9 +4,10 @@ import { Link } from 'react-router-dom'
 import { GET_ALL_POST, GET_ALL_USERS, GET_COMMENTS, GET_LIKES } from '../../graphql/Queries'
 import { BsHeartFill, BsHeart } from 'react-icons/bs'
 import { useCookies } from 'react-cookie'
-import { DELETE_LIKE, INSERT_LIKE } from '../../graphql/Mutation'
+import { DELETE_LIKE, INSERT_COMMENT, INSERT_LIKE } from '../../graphql/Mutation'
 
 export default function Post() {
+    const[insertComment] = useMutation(INSERT_COMMENT)
     const[insertLike] = useMutation(INSERT_LIKE)
     const[deleteLike] = useMutation(DELETE_LIKE)
     const{error, loading, data} = useQuery(GET_ALL_POST)
@@ -17,6 +18,7 @@ export default function Post() {
     const[user, setUser] = useState([])
     const[like, setLike] = useState([])
     const[com, setCom] = useState([])
+    const[newCom, setNewCom] = useState("")
 
     const [cookies, setCookie, removeCookie] = useCookies(['user-login', 'user-login-id'])
     let id = cookies['user-login-id']
@@ -31,12 +33,26 @@ export default function Post() {
     }
 
     const unlikePost = (id: string) => {
-        console.log("unlike")
         deleteLike({
             variables: {
                 id: id
             }, refetchQueries: [{query: GET_LIKES}]
         })
+    }
+
+    const newComment = (postid: string) => {
+        event?.preventDefault()
+        if(newCom != "") {
+            insertComment({
+                variables: {
+                    userid: id,
+                    postid: postid,
+                    comment: newCom
+                }, refetchQueries: [{query: GET_COMMENTS}]
+            })
+
+            setNewCom("")
+        }
     }
 
     let likeNo = 0
@@ -75,7 +91,16 @@ export default function Post() {
                                     user.map((u) => {
                                         if(u.id == e.userid) {
                                             return (
-                                                <p>{ u.firstname } { u.lastname }</p>
+                                                <div className='user-info'>
+                                                    {
+                                                        u.profile == null ? <img src="src/assets/default-profile-photo.jpg" alt="" width="80px"/> : <img src={ u.profile } alt="" width="100px"/>
+                                                    }
+                                                    { u.id == id ? 
+                                                        <Link to={'/profile/me'}><p>{ u.firstname } { u.lastname }</p></Link>
+                                                    :
+                                                        <Link to={`/profile/${u.profileurl}`}><p>{ u.firstname } { u.lastname }</p></Link>
+                                                    }
+                                                </div>
                                             )
                                         }
                                     })
@@ -112,7 +137,51 @@ export default function Post() {
                                     likePost(id, e.id)
                                 }}></BsHeart></p>
                                 }
+                                
                                 <p className='comment'><Link to={''}>{ comNo } Comment(s)</Link></p>
+                                
+                                <div className="comment-list">
+                                    {
+                                        com.map((co) => {
+                                            if(co.postid == e.id) {
+                                                return (
+                                                    <>
+                                                        {
+                                                            user.map((u) => {
+                                                                if(u.id == co.userid) {
+                                                                    return (
+                                                                        <div className='user-info'>
+                                                                            {
+                                                                                u.profile == null ? <img src="src/assets/default-profile-photo.jpg" alt="" width="80px"/> : <img src={ u.profile } alt="" width="100px"/>
+                                                                            }
+                                                                            { u.id == id ? 
+                                                                                <Link to={'/profile/me'}><p>{ u.firstname } { u.lastname }</p></Link>
+                                                                            :
+                                                                                <Link to={`/profile/${u.profileurl}`}><p>{ u.firstname } { u.lastname }</p></Link>
+                                                                            }
+                                                                        </div>
+                                                                    )
+                                                                }
+                                                            })
+                                                        }
+                                                        <p>{ co.comment }</p>
+                                                        <hr />
+                                                    </>
+                                                )
+                                            }
+                                        })
+                                    }
+                                </div>
+
+                                <form action="" className='new-comment'>
+                                    <textarea name="comment" id="commnet" cols="30" rows="3" onChange={ (e) => {
+                                        setNewCom(e.target.value)
+                                    }}></textarea>
+                                    <input type="button" value="Submit" onClick={ () => {
+                                        event?.preventDefault()
+                                        newComment(e.id)
+                                    }} />
+                                </form>
                             </div>
                         </div>
                     )

@@ -390,6 +390,19 @@ func (r *mutationResolver) CreateLike(ctx context.Context, input *model.NewLike)
 	return &like, nil
 }
 
+// DeleteLike is the resolver for the deleteLike field.
+func (r *mutationResolver) DeleteLike(ctx context.Context, id string) (bool, error) {
+	var like model.Like
+
+	_, err := r.DB.Model(&like).Where("postid = ?", id).Delete()
+
+	if err != nil {
+		return false, errors.New("delete like failed")
+	}
+
+	return true, nil
+}
+
 // Countries is the resolver for the countries field.
 func (r *queryResolver) Countries(ctx context.Context) ([]*model.Country, error) {
 	var countries []*model.Country
@@ -659,10 +672,15 @@ func (r *queryResolver) Experiences(ctx context.Context, id float64) ([]*model.E
 }
 
 // Posts is the resolver for the posts field.
-func (r *queryResolver) Posts(ctx context.Context) ([]*model.Post, error) {
+func (r *queryResolver) Posts(ctx context.Context, title *string) ([]*model.Post, error) {
 	var posts []*model.Post
+	var err error
 
-	err := r.DB.Model(&posts).Select()
+	if title != nil {
+		err = r.DB.Model(&posts).Where("caption LIKE ?", title).Select()
+	} else {
+		err = r.DB.Model(&posts).Select()
+	}
 
 	if err != nil {
 		return nil, errors.New("select posts failed")
@@ -672,10 +690,10 @@ func (r *queryResolver) Posts(ctx context.Context) ([]*model.Post, error) {
 }
 
 // Comments is the resolver for the comments field.
-func (r *queryResolver) Comments(ctx context.Context, postid float64) ([]*model.Comment, error) {
+func (r *queryResolver) Comments(ctx context.Context) ([]*model.Comment, error) {
 	var comments []*model.Comment
 
-	err := r.DB.Model(&comments).Where("postid = ?", postid).Select()
+	err := r.DB.Model(&comments).Select()
 
 	if err != nil {
 		return nil, errors.New("select comments failed")
@@ -685,10 +703,10 @@ func (r *queryResolver) Comments(ctx context.Context, postid float64) ([]*model.
 }
 
 // Likes is the resolver for the likes field.
-func (r *queryResolver) Likes(ctx context.Context, postid float64) ([]*model.Like, error) {
+func (r *queryResolver) Likes(ctx context.Context) ([]*model.Like, error) {
 	var likes []*model.Like
 
-	err := r.DB.Model(&likes).Where("postid = ?", postid).Select()
+	err := r.DB.Model(&likes).Select()
 
 	if err != nil {
 		return nil, errors.New("select likes failed")

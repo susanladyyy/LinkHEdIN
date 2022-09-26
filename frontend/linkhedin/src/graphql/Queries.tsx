@@ -374,12 +374,8 @@ export const GET_ALL_POST = gql`
 `
 
 export const GET_COMMENTS = gql`
-    query getComments (
-        $postid: Float!
-    ) {
-        comments (
-            postid: $postid
-        ) {
+    query getComments {
+        comments {
             id
             userid
             postid
@@ -389,12 +385,8 @@ export const GET_COMMENTS = gql`
 `
 
 export const GET_LIKES = gql`
-    query getLikes (
-        $postid: Float!
-    ) {
-        likes (
-            postid: $postid
-        ) {
+    query getLikes {
+        likes {
             id
             userid
             postid

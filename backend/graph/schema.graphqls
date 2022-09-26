@@ -172,9 +172,9 @@ type Query {
   profileviews (id: Float!): [Profileview!]!
   educations (id: Float!) : [Education!]!
   experiences (id: Float!) : [Experience!]!
-  posts: [Post!]!
-  comments (postid : Float!) : [Comment!]!
-  likes (postid : Float!) : [Like!]!
+  posts (title: String): [Post!]!
+  comments: [Comment!]!
+  likes: [Like!]!
 }
 
 type Temporary {
@@ -327,4 +327,5 @@ type Mutation {
   createPost(input: NewPost!) : Post!
   createComment(input: NewComment) : Comment!
   createLike(input: NewLike) : Like!
+  deleteLike(id : ID!) : Boolean!
 }

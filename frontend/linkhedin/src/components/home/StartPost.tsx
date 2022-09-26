@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client'
 import React, { useEffect, useRef, useState } from 'react'
 import { useCookies } from 'react-cookie'
-import { GET_USER_BY_URL } from '../../graphql/Queries'
+import { GET_ALL_POST, GET_USER_BY_URL } from '../../graphql/Queries'
 import '../../styles/modal/createpost.scss'
 import { GrClose } from 'react-icons/gr'
 import Axios from 'axios'
@@ -52,7 +52,7 @@ export default function StartPost() {
                         userid: id,
                         media: media,
                         caption: caption,
-                    }
+                    }, refetchQueries: [{query: GET_ALL_POST}]
                 })
             }
 

@@ -142,6 +142,7 @@ type ComplexityRoot struct {
 		DeleteExperience   func(childComplexity int, id string) int
 		DeleteFollower     func(childComplexity int, input model.NewFollower) int
 		DeleteFollowing    func(childComplexity int, input model.NewFollowing) int
+		DeleteLike         func(childComplexity int, id string) int
 		DeleteTemporary    func(childComplexity int, input model.DeleteTemporary) int
 		DeleteView         func(childComplexity int, status bool) int
 		UpdateConnect      func(childComplexity int, input model.UpdateConnect) int
@@ -176,7 +177,7 @@ type ComplexityRoot struct {
 
 	Query struct {
 		Cities          func(childComplexity int) int
-		Comments        func(childComplexity int, postid float64) int
+		Comments        func(childComplexity int) int
 		Countries       func(childComplexity int) int
 		Degrees         func(childComplexity int) int
 		Educations      func(childComplexity int, id float64) int
@@ -184,9 +185,9 @@ type ComplexityRoot struct {
 		Experiences     func(childComplexity int, id float64) int
 		Industries      func(childComplexity int) int
 		Jobs            func(childComplexity int, userid *string) int
-		Likes           func(childComplexity int, postid float64) int
+		Likes           func(childComplexity int) int
 		Notifications   func(childComplexity int) int
-		Posts           func(childComplexity int) int
+		Posts           func(childComplexity int, title *string) int
 		Profileviews    func(childComplexity int, id float64) int
 		Pronouns        func(childComplexity int) int
 		Schools         func(childComplexity int) int
@@ -277,6 +278,7 @@ type MutationResolver interface {
 	CreatePost(ctx context.Context, input model.NewPost) (*model.Post, error)
 	CreateComment(ctx context.Context, input *model.NewComment) (*model.Comment, error)
 	CreateLike(ctx context.Context, input *model.NewLike) (*model.Like, error)
+	DeleteLike(ctx context.Context, id string) (bool, error)
 }
 type QueryResolver interface {
 	Countries(ctx context.Context) ([]*model.Country, error)
@@ -298,9 +300,9 @@ type QueryResolver interface {
 	Profileviews(ctx context.Context, id float64) ([]*model.Profileview, error)
 	Educations(ctx context.Context, id float64) ([]*model.Education, error)
 	Experiences(ctx context.Context, id float64) ([]*model.Experience, error)
-	Posts(ctx context.Context) ([]*model.Post, error)
-	Comments(ctx context.Context, postid float64) ([]*model.Comment, error)
-	Likes(ctx context.Context, postid float64) ([]*model.Like, error)
+	Posts(ctx context.Context, title *string) ([]*model.Post, error)
+	Comments(ctx context.Context) ([]*model.Comment, error)
+	Likes(ctx context.Context) ([]*model.Like, error)
 }
 
 type executableSchema struct {
@@ -856,6 +858,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteFollowing(childComplexity, args["input"].(model.NewFollowing)), true
 
+	case "Mutation.deleteLike":
+		if e.complexity.Mutation.DeleteLike == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteLike_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteLike(childComplexity, args["id"].(string)), true
+
 	case "Mutation.deleteTemporary":
 		if e.complexity.Mutation.DeleteTemporary == nil {
 			break
@@ -1019,12 +1033,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		args, err := ec.field_Query_comments_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.Comments(childComplexity, args["postid"].(float64)), true
+		return e.complexity.Query.Comments(childComplexity), true
 
 	case "Query.countries":
 		if e.complexity.Query.Countries == nil {
@@ -1095,12 +1104,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		args, err := ec.field_Query_likes_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.Likes(childComplexity, args["postid"].(float64)), true
+		return e.complexity.Query.Likes(childComplexity), true
 
 	case "Query.notifications":
 		if e.complexity.Query.Notifications == nil {
@@ -1114,7 +1118,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		return e.complexity.Query.Posts(childComplexity), true
+		args, err := ec.field_Query_posts_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Posts(childComplexity, args["title"].(*string)), true
 
 	case "Query.profileviews":
 		if e.complexity.Query.Profileviews == nil {
@@ -1705,9 +1714,9 @@ type Query {
   profileviews (id: Float!): [Profileview!]!
   educations (id: Float!) : [Education!]!
   experiences (id: Float!) : [Experience!]!
-  posts: [Post!]!
-  comments (postid : Float!) : [Comment!]!
-  likes (postid : Float!) : [Like!]!
+  posts (title: String): [Post!]!
+  comments: [Comment!]!
+  likes: [Like!]!
 }
 
 type Temporary {
@@ -1860,6 +1869,7 @@ type Mutation {
   createPost(input: NewPost!) : Post!
   createComment(input: NewComment) : Comment!
   createLike(input: NewLike) : Like!
+  deleteLike(id : ID!) : Boolean!
 }`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
@@ -2138,6 +2148,21 @@ func (ec *executionContext) field_Mutation_deleteFollowing_args(ctx context.Cont
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_deleteLike_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_deleteTemporary_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -2228,21 +2253,6 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_comments_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 float64
-	if tmp, ok := rawArgs["postid"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postid"))
-		arg0, err = ec.unmarshalNFloat2float64(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["postid"] = arg0
-	return args, nil
-}
-
 func (ec *executionContext) field_Query_educations_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -2288,18 +2298,18 @@ func (ec *executionContext) field_Query_jobs_args(ctx context.Context, rawArgs m
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_likes_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_posts_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 float64
-	if tmp, ok := rawArgs["postid"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postid"))
-		arg0, err = ec.unmarshalNFloat2float64(ctx, tmp)
+	var arg0 *string
+	if tmp, ok := rawArgs["title"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("title"))
+		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["postid"] = arg0
+	args["title"] = arg0
 	return args, nil
 }
 
@@ -6000,6 +6010,61 @@ func (ec *executionContext) fieldContext_Mutation_createLike(ctx context.Context
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_deleteLike(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_deleteLike(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteLike(rctx, fc.Args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_deleteLike(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_deleteLike_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Notification_id(ctx context.Context, field graphql.CollectedField, obj *model.Notification) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Notification_id(ctx, field)
 	if err != nil {
@@ -7729,7 +7794,7 @@ func (ec *executionContext) _Query_posts(ctx context.Context, field graphql.Coll
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Posts(rctx)
+		return ec.resolvers.Query().Posts(rctx, fc.Args["title"].(*string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7766,6 +7831,17 @@ func (ec *executionContext) fieldContext_Query_posts(ctx context.Context, field 
 			return nil, fmt.Errorf("no field named %q was found under type Post", field.Name)
 		},
 	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_posts_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
 	return fc, nil
 }
 
@@ -7783,7 +7859,7 @@ func (ec *executionContext) _Query_comments(ctx context.Context, field graphql.C
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Comments(rctx, fc.Args["postid"].(float64))
+		return ec.resolvers.Query().Comments(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7820,17 +7896,6 @@ func (ec *executionContext) fieldContext_Query_comments(ctx context.Context, fie
 			return nil, fmt.Errorf("no field named %q was found under type Comment", field.Name)
 		},
 	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_comments_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return
-	}
 	return fc, nil
 }
 
@@ -7848,7 +7913,7 @@ func (ec *executionContext) _Query_likes(ctx context.Context, field graphql.Coll
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Likes(rctx, fc.Args["postid"].(float64))
+		return ec.resolvers.Query().Likes(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7882,17 +7947,6 @@ func (ec *executionContext) fieldContext_Query_likes(ctx context.Context, field 
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Like", field.Name)
 		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_likes_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return
 	}
 	return fc, nil
 }
@@ -12836,6 +12890,15 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_createLike(ctx, field)
+			})
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "deleteLike":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_deleteLike(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {

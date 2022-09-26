@@ -284,24 +284,29 @@ export default function ProfileView() {
     // console.log(dataInv)
     // console.log(dataEdu)
     // console.log(dataExp)
-    console.log(dataType)
-    console.log(dataPen)
-    console.log(dataCon)
+    // console.log(dataType)
+    // console.log(dataPen)
+    // console.log(dataCon)
 
     return (
         <div className='profileView'>
             <div className="left-profile">
                 <div className="profile">
                     <div className="banner">
-                        { dataLoad ? (data['users'][0].banner ? <img src="" alt="not found" /> : <img src="/src/assets/default_banner.jpg" alt="not found" />) : null }
+                        { dataLoad ? (data['users'][0].banner ? <img src={ data['users'][0].banner } alt="not found" /> : <img src="/src/assets/default_banner.jpg" alt="not found" />) : null }
                     </div>
                     <div className="profile-image">
-                        { dataLoad ? (data['users'][0].profile ? <img src="" alt="not found" /> : <img src="/src/assets/default-profile-photo.jpg" alt="not found" />) : null }
+                        { dataLoad ? (data['users'][0].profile ? <img src={ data['users'][0].profile } className="db" alt="not found" /> : <img src="/src/assets/default-profile-photo.jpg" alt="not found" />) : null }
                     </div>
                     <div className="profile-data">
-                        <div className="edit-icon">
-                            <Link to={'/edit-profile'}><MdOutlineModeEditOutline /></Link>
-                        </div>
+                        {
+                            userurl['profile'] == "me" ?
+                            <div className="edit-icon">
+                                <Link to={'/edit-profile'}><MdOutlineModeEditOutline /></Link>
+                            </div>
+                            :
+                            null
+                        }
                         { userurl['profile'] != "me" ?
                         <div className="follow-connect">
                             { following.length == 0 || (following.some(item => item.useridfollowed == id) == false) ? 

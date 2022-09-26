@@ -132,6 +132,7 @@ export const GET_USER_BY_EMAIL = gql`
             profileurl
             profile
             about
+            banner
         }
     }
 `
@@ -149,6 +150,7 @@ export const GET_ALL_USERS = gql`
             profile
             about
             headline
+            banner
         }
     }
 `
@@ -168,6 +170,7 @@ export const GET_USER_BY_URL = gql`
             profile
             about
             headline
+            banner
         }
     }
 `
@@ -187,6 +190,7 @@ export const SEARCH_USER_BY_NAME = gql`
             profile
             about
             headline
+            banner
         }
     }
 `
@@ -354,6 +358,46 @@ export const GET_USER_EXPERIENCE = gql`
             enddate
             description
             industry
+        }
+    }
+`
+
+export const GET_ALL_POST = gql`
+    query getAllPost {
+        posts {
+            id
+            userid
+            media
+            caption
+        }
+    }
+`
+
+export const GET_COMMENTS = gql`
+    query getComments (
+        $postid: Float!
+    ) {
+        comments (
+            postid: $postid
+        ) {
+            id
+            userid
+            postid
+            comment
+        }
+    }
+`
+
+export const GET_LIKES = gql`
+    query getLikes (
+        $postid: Float!
+    ) {
+        likes (
+            postid: $postid
+        ) {
+            id
+            userid
+            postid
         }
     }
 `

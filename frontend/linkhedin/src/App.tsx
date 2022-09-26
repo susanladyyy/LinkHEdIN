@@ -16,6 +16,7 @@ import SearchPage from "./pages/SearchPage"
 import EditEducation from "./pages/EditEducation"
 import EditExperience from "./pages/EditExperience"
 import EditProfile from "./pages/EditProfile"
+import Comment from "./pages/Comment"
 
 const client = new ApolloClient({
   cache: new InMemoryCache(),

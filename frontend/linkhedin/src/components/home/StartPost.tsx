@@ -1,15 +1,18 @@
-import { useQuery } from '@apollo/client'
-import React, { useEffect, useState } from 'react'
+import { useMutation, useQuery } from '@apollo/client'
+import React, { useEffect, useRef, useState } from 'react'
 import { useCookies } from 'react-cookie'
 import { GET_USER_BY_URL } from '../../graphql/Queries'
-import CreatePost from '../modal/CreatePost'
 import '../../styles/modal/createpost.scss'
 import { GrClose } from 'react-icons/gr'
+import Axios from 'axios'
+import { INSERT_POST } from '../../graphql/Mutation'
 
 export default function StartPost() {
-    const [cookies, setCookie, removeCookie] = useCookies(['user-login'])
+    const [cookies, setCookie, removeCookie] = useCookies(['user-login', 'user-login-id'])
     const url = cookies['user-login']
+    const id = cookies['user-login-id']
     const[dataLoad, setDataLoad] = useState(false)
+    const up_preset = "linkhedin_su"
     
     const{error: errData, loading, data} = useQuery(GET_USER_BY_URL, {
         variables: {
@@ -17,12 +20,14 @@ export default function StartPost() {
         }
     })
 
+    const[insertPost] = useMutation(INSERT_POST)
     const[showModal, setShowModal] = useState(false)
 
     const startPost = () => {
         showModal ? setShowModal(false) : setShowModal(true)
     }
 
+    const fileRef = useRef(null)
     const[caption, setCaption] = useState("")
     const[media, setMedia] = useState("")
     const[error, setError] = useState("")
@@ -32,8 +37,55 @@ export default function StartPost() {
             setError("Caption must be filled!")
         }
         else {
-            setError("OKAY")
+            if(media == "") {
+                insertPost({
+                    variables: {
+                        userid: id,
+                        media: null,
+                        caption: caption,
+                    }
+                })
+            }
+            else {
+                insertPost({
+                    variables: {
+                        userid: id,
+                        media: media,
+                        caption: caption,
+                    }
+                })
+            }
+
+            setShowModal(false)
         }
+    }
+
+    const showImage = async () => {
+        const config = {
+            headers: { "X-Requested-With": "XMLHttpRequest" },
+        };
+
+        let mediaPromise = null
+        const formData = new FormData()
+
+        formData.append("file", media)
+        formData.append("upload_preset", up_preset)
+
+        mediaPromise = Axios.post("https://api.cloudinary.com/v1_1/cloudinarysu/upload", formData, config).then((response) => {
+            return response.data
+        })
+
+        const mediaRe= Promise.resolve(mediaPromise)
+
+        let mediaStr = mediaRe.then((value) => {
+            if(value) return value.url
+            return null
+        })
+
+        const med = Promise.resolve(mediaStr)
+        const medValue: string = await med
+        
+        setMedia(medValue)
     }
 
     useEffect(() => {
@@ -49,7 +101,7 @@ export default function StartPost() {
         <>
             <div className='start-post-home'>
                 <div className="profile">
-                    { dataLoad ? (data['users'][0].profile ? <img src="" alt="not found" /> : <img src="/src/assets/default-profile-photo.jpg" alt="not found" />) : null }
+                    { dataLoad ? (data['users'][0].profile ? <img src={ data['users'][0].profile } alt="not found" /> : <img src="/src/assets/default-profile-photo.jpg" alt="not found" />) : null }
                 </div>
                 <div className="post-button-form">
                     <button type='button' onClick={ () => startPost() }>Start a post</button>
@@ -77,18 +129,25 @@ export default function StartPost() {
                                     }}></textarea>
                                 </div>
                                 <div className="media">
-                                    <input type="file" name="" id="" onChange={ (e) => {
-                                        setMedia(e.target.value)
+                                    <input ref={fileRef} type="file" name="" id="" onChange={ (e) => {
+                                        setMedia(e.target.files[0])
                                     }}/>
-                                    
-                                    { media != "" ? (media.split(".")[1].match("png") || media.split(".")[1].match("jpg") || media.split(".")[1].match("jpeg") ? 
-                                    <div className="preview">
-                                        <img src={ media } alt="" />
-                                    </div> : 
-                                    <div className="preview">
-                                        <video src={ media }></video>
-                                    </div>
-                                    ) : null}
+                                    {
+                                        media != "" ?
+                                        <>
+                                            <button onClick={ () => showImage() }>Preview</button>
+                                        
+                                            <div className="preview">
+                                                <img src={ media } alt="" />
+                                                <button onClick={ () => {
+                                                    fileRef.current.value = null
+                                                    setMedia("")
+                                                } }>Remove</button>
+                                            </div>
+                                        </> 
+                                        :
+                                        null
+                                    }
 
                                     <div className="post-submit">
                                         <input type="submit" value="Post" onClick={ () => createPost(caption, media)}/>

@@ -49,6 +49,10 @@
                             width: 50%;
                             height: auto;
                         }
+
+                        img.db {
+                            height: 90px;
+                        }
                     }
             
                     .profile-data {
@@ -189,6 +193,65 @@
 
                     button:hover {
                         background-color: $light_gray_light;
+                    }
+                }
+            }
+
+            .create-post {
+                .card {
+                    .card-body {
+                        .media {
+                            img {
+                                width: 150px;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .posts {
+                .card {
+                    background-color: $white;
+                    padding: 20px 0px;
+                    margin: 20px 0px;
+                    display: flex;
+                    flex-direction: column;
+                    border-radius: 10px;
+    
+                    .card-header {
+                        p {
+                            padding: 5px 10px;
+                        }
+                    }
+    
+                    .card-body {
+                        img {
+                            width: 100%;
+                            height: auto;
+                            padding: 10px 0px;
+                        }
+                    }
+    
+                    .card-footer {
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: space-between;
+    
+                        .comment, .likes {
+                            color: $dark_gray;
+                            font-weight: 600;
+                            padding: 5px 10px;
+                        }
+    
+                        .comment a {
+                            text-decoration: none;
+                            color: $dark_gray;
+                            cursor: pointer;
+                        }
+    
+                        .comment a:hover {
+                            color: $accent_blue;
+                        }
                     }
                 }
             }

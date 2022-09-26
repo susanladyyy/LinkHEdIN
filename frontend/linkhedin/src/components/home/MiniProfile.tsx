@@ -55,10 +55,10 @@ export default function miniprofile() {
         <div className='mini-profile'>
             <div className="top">
                 <div className="banner">
-                    { dataLoad ? (data['users'][0].banner ? <img src="" alt="not found" /> : <img src="/src/assets/default_banner.jpg" alt="not found" />) : null }
+                    { dataLoad ? (data['users'][0].banner ? <img src={ data['users'][0].banner } className="db" alt="not found" /> : <img src="/src/assets/default_banner.jpg" alt="not found" />) : null }
                 </div>
                 <div className="profile">
-                    { dataLoad ? (data['users'][0].profile ? <img src="" alt="not found" /> : <img src="/src/assets/default-profile-photo.jpg" alt="not found" />) : null }
+                    { dataLoad ? (data['users'][0].profile ? <img src={ data['users'][0].profile } className="db" alt="not found" /> : <img src="/src/assets/default-profile-photo.jpg" alt="not found" />) : null }
                 </div>
                 <div className="profile-data">
                     { dataLoad ? <p className='name'>{ data['users'][0].firstname } {data['users'][0].lastname}</p> : <p className='name'>loading...</p>}

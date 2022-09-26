@@ -336,14 +336,18 @@ export const UPDATE_PROFILE = gql`
         $lastname: String!
         $headline: String
         $about: String
+        $profile: String
+        $banner: String
     ) {
         updateProfile (
             input: {
-                id: $id
-                firstname: $firstname
-                lastname: $lastname
-                headline:$headline
-                about: $about
+            id: $id
+            firstname: $firstname
+            lastname: $lastname
+            headline:$headline
+            about: $about
+            profile: $profile
+            banner: $banner
             }
         ) {
             id
@@ -356,6 +360,7 @@ export const UPDATE_PROFILE = gql`
             profile
             about
             headline
+                banner
         }
     }
 `
@@ -377,5 +382,65 @@ export const DELETE_EXPERIENCE = gql`
         deleteExperience (
             id: $id
         )
+    }
+`
+
+export const INSERT_POST = gql`
+    mutation insertPost (
+        $userid: Float!
+        $media: String
+        $caption: String!
+    ) {
+        createPost(
+            input: {
+                userid: $userid
+                media: $media
+                caption: $caption
+            }
+        ) {
+            id
+            userid
+            media
+            caption
+        }
+    }
+`
+
+export const INSERT_COMMENT = gql`
+    mutation insertComment (
+        $userid: Float!
+        $postid: Float!
+        $comment: String!
+    ) {
+        createComment(
+            input: {
+                userid: $userid
+                postid: $postid
+                comment: $comment
+            }
+        ) {
+            id
+            userid
+            postid
+            comment
+        }
+    }
+`
+
+export const INSERT_LIKE = gql`
+    mutation insertLike (
+        $userid: Float!
+        $postid: Float!
+    ) {
+        createLike (
+            input: {
+                userid: $userid
+                postid: $postid
+            }
+        ) {
+            id
+            userid
+            postid
+        }
     }
 `

@@ -122,7 +122,7 @@ export default function Header() {
                         </li>
                         <li>
                             <div className="icon">
-                                { dataLoad ? (data['users'][0].profile ? <img src="" alt="" /> : <img src="/src/assets/default-profile-photo.jpg" alt="" />) : null}
+                                { dataLoad ? (data['users'][0].profile ? <img src={ data['users'][0].profile } alt="" /> : <img src="/src/assets/default-profile-photo.jpg" alt="" />) : null}
                             </div>
                             <div className="menu-name">
                                 <p><Link to={'/profile/me'}>Me</Link></p>
@@ -137,8 +137,6 @@ export default function Header() {
                             </div>
                         </li>
                     </ul>
-
-                    {/* satu lagi ada menu untuk profile */}
                 </div>
             </div>
         </>

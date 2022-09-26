@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useCookies } from 'react-cookie'
-import Footer from '../components/auth/Footer'
+import Footer from '../components/Footer'
 import Header from '../components/Header'
 import JobList from '../components/job/JobList'
 import PostJob from '../components/job/PostJob'
@@ -18,14 +18,18 @@ export default function Jobs() {
     }, [cookies])  
     
     return (
-        <div className='job-page'>
-            <Header />
+        <>
+            <div className='job-page'>
+                <Header />
 
-            <div className="job">
-                <PostJob />
+                <div className="job">
+                    <PostJob />
 
-                <JobList />
+                    <JobList />
+                </div>
             </div>
-        </div>
+            
+            <Footer />
+        </>
     )
 }

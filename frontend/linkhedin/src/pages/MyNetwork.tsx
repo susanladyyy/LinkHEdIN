@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { useCookies } from 'react-cookie'
+import Footer from '../components/Footer'
 import Header from '../components/Header'
 import Invitations from '../components/network/Invitations'
 import MightKnow from '../components/network/MightKnow'
@@ -17,12 +18,16 @@ export default function MyNetwork() {
     }, [cookies])  
     
     return (
-        <div className='my-network'>
-            <Header />
+        <>
+            <div className='my-network'>
+                <Header />
 
-            <Invitations />
+                <Invitations />
 
-            <MightKnow />
-        </div>
+                <MightKnow />
+            </div>
+            
+            <Footer />
+        </>
     )
 }

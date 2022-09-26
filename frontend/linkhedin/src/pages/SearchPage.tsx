@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { useCookies } from 'react-cookie'
+import Footer from '../components/Footer'
 import Header from '../components/Header'
 import SearchUser from '../components/search/SearchUser'
 import '../styles/search/search.scss'
@@ -16,10 +17,14 @@ export default function SearchPage() {
     }, [cookies])   
 
     return (
-        <div className='search-page'>
-            <Header />
+        <>
+            <div className='search-page'>
+                <Header />
 
-            <SearchUser />
-        </div>
+                <SearchUser />
+            </div>
+
+            <Footer />
+        </>
     )
 }

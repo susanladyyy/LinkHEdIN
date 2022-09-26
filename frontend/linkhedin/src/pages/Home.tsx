@@ -6,6 +6,8 @@ import { useNavigate } from 'react-router-dom'
 import Miniprofile from '../components/home/MiniProfile'
 import StartPost from '../components/home/StartPost'
 import Right from '../components/home/Right'
+import Post from '../components/post/Post'
+import Footer from '../components/Footer'
 
 export default function Home() {
     const [cookies, setCookie, removeCookie] = useCookies(['user-login'])
@@ -20,26 +22,30 @@ export default function Home() {
     }, [cookies])    
 
     return (
-        <div className='home'>
-            <Header />
+        <>
+            <div className='home'>
+                <Header />
 
-            <div className="home-content">
-                <div className="left-home">
-                    <Miniprofile />
-                </div>
-                <div className="middle-home">
-                    <div className="start-post">
-                        <StartPost />
-                        <hr />
+                <div className="home-content">
+                    <div className="left-home">
+                        <Miniprofile />
                     </div>
-                    <div className="posts">
-
+                    <div className="middle-home">
+                        <div className="start-post">
+                            <StartPost />
+                            <hr />
+                        </div>
+                        <div className="posts">
+                            <Post />
+                        </div>
+                    </div>
+                    <div className="right-home">
+                        <Right />
                     </div>
                 </div>
-                <div className="right-home">
-                    <Right />
-                </div>
-            </div>
-        </div> 
+            </div> 
+            
+            <Footer />
+        </>
     )
 }

@@ -1,0 +1,44 @@
+@import './variables/variables.scss';
+@import './mixin/mixin.scss';
+
+.comment-comp {
+    padding: 30px;
+    background-color: $linkedin_cream;
+    min-height: 100vh;
+
+    h1 {
+        text-align: center;
+        margin: 10px 0px;
+        color: $dark_gray;
+    }
+
+    .form {
+        @include centralizedFlex();
+        @include divCentralized();
+
+        .edit-comment {
+            margin: 20px 0px;
+            width: 650px;
+
+            .input {
+                textarea {
+                    width: 100%;
+                    border: none;
+                    border-radius: 10px;
+                    padding: 10px;
+                }
+
+                .submit-com {
+                    margin: 30px 0px;
+                    color: white;
+                    background-color: $accent_blue;
+                    cursor: pointer;
+                }
+
+                .submit-com:hover {
+                    background-color: $linkedin_blue;
+                }
+            }
+        }
+    }
+}

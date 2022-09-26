@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useCookies } from 'react-cookie'
 import { useNavigate } from 'react-router-dom'
-import Footer from '../components/auth/Footer'
+import Footer from '../components/Footer'
 import Header from '../components/Header'
 import ProfileView from '../components/profile/ProfileView'
 import '../styles/profile/profile.scss'
@@ -20,12 +20,14 @@ export default function ProfilePage() {
 
 
     return (
-        <div>
-            <Header />
+        <>
+            <div>
+                <Header />
 
-            <ProfileView />
+                <ProfileView />
 
-            {/* bikin footer untuk authorized page */}
-        </div>
+                <Footer />
+            </div>
+        </>
     )
 }

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useCookies } from 'react-cookie'
 import EditProForm from '../components/edit/EditProForm'
+import Footer from '../components/Footer'
 import Header from '../components/Header'
 import '../styles/editprofile.scss'
 
@@ -16,10 +17,14 @@ export default function EditProfile() {
     }, [cookies]) 
     
     return (
-        <div className='edit-profile'>
-            <Header />
+        <>
+            <div className='edit-profile'>
+                <Header />
 
-            <EditProForm />
-        </div>
+                <EditProForm />
+            </div>
+            
+            <Footer />
+        </>
     )
 }

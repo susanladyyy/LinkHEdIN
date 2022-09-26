@@ -53,26 +53,6 @@ type Education {
   userid : Float!
 }
 
-type Websitetype {
-  id : ID!
-  websitetypename : String!
-}
-
-type Servicetype {
-  id : ID!
-  servicename : String!
-}
-
-type Mediatype {
-  id : ID!
-  mediatypename : String!
-}
-
-type Skill {
-  id : ID!
-  skillname : String!
-}
-
 type Pronoun {
   id : ID!
   pronounsname : String!
@@ -95,24 +75,6 @@ type Location {
   cityid : Float!
 }
 
-type Phonetype {
-  id : ID!
-  phonetypename : String!
-}
-
-type Userphonenumber {
-  id : ID!
-  phonenumber : String!
-  phonetypeid : Float!
-}
-
-type Usercontact {
-  id : ID!
-  userphonenumberid : Float
-  address : String
-  birthday : String
-}
-
 type User {
   id : ID!
   pronounsid : Float
@@ -120,7 +82,6 @@ type User {
   lastname : String!
   additionalname : String
   headline : String!
-  usercontactsid : Float
   password : String!
   profile : String
   banner : String
@@ -138,11 +99,6 @@ type Userconnection {
   status : Boolean!
 }
 
-type Usercurrposition {
-  id : ID!
-  experienceid : String!
-}
-
 type Userfollower {
   id : ID!
   userid : Float!
@@ -153,20 +109,6 @@ type Userfollowing {
   id : ID!
   userid : Float!
   useridfollowed : Float!
-}
-
-type Userinstantmessaging {
-  id : ID!
-  usercontactid : Float!
-  serviceid : Float!
-  username : String!
-}
-
-type Userwebsite {
-  id : ID!
-  usercontactsid : Float!
-  websitetypeid : Float!
-  websiteurl : String!
 }
 
 type Job {
@@ -190,6 +132,26 @@ type Profileview {
   deletestatus : Boolean!
 }
 
+type Post {
+  id : ID!
+  userid : Float!
+  media : String
+  caption : String!
+}
+
+type Like {
+  id : ID!
+  userid : Float!
+  postid : Float!
+}
+
+type Comment {
+  id : ID!
+  userid : Float!
+  postid : Float!
+  comment : String!
+}
+
 type Query {
   countries: [Country!]!
   cities: [City!]!
@@ -199,11 +161,6 @@ type Query {
   degrees: [Degree!]!
   schools: [School!]!
   studyfields: [Studyfield!]!
-  phonetypes: [Phonetype!]!
-  websitetypes: [Websitetype!]!
-  servicetypes: [Servicetype!]!
-  mediatypes: [Mediatype!]!
-  skills: [Skill!]!
   users (email: String, password: String, url: String, name: String): [User!]!
   temporaries (url: String) : [Temporary!]!
   userconnections (id: Float!, status: Boolean) : [Userconnection!]!
@@ -215,6 +172,9 @@ type Query {
   profileviews (id: Float!): [Profileview!]!
   educations (id: Float!) : [Education!]!
   experiences (id: Float!) : [Experience!]!
+  posts: [Post!]!
+  comments (postid : Float!) : [Comment!]!
+  likes (postid : Float!) : [Like!]!
 }
 
 type Temporary {
@@ -322,6 +282,25 @@ input EditProfile {
   lastname : String!
   headline : String
   about : String
+  profile : String
+  banner : String
+}
+
+input NewPost {
+  userid : Float!
+  media : String
+  caption : String!
+}
+
+input NewComment {
+  userid : Float!
+  postid : Float!
+  comment : String
+}
+
+input NewLike {
+  userid : Float!
+  postid : Float!
 }
 
 type Mutation {
@@ -345,4 +324,7 @@ type Mutation {
   updateProfile(input: EditProfile!) : User!
   deleteEducation(id: ID!) : Boolean!
   deleteExperience(id: ID!) : Boolean!
+  createPost(input: NewPost!) : Post!
+  createComment(input: NewComment) : Comment!
+  createLike(input: NewLike) : Like!
 }

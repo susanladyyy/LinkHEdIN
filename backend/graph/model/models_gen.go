@@ -8,6 +8,13 @@ type City struct {
 	Cityname  string  `json:"cityname"`
 }
 
+type Comment struct {
+	ID      string  `json:"id"`
+	Userid  float64 `json:"userid"`
+	Postid  float64 `json:"postid"`
+	Comment string  `json:"comment"`
+}
+
 type Country struct {
 	ID          string `json:"id"`
 	Countryname string `json:"countryname"`
@@ -33,6 +40,8 @@ type EditProfile struct {
 	Lastname  string  `json:"lastname"`
 	Headline  *string `json:"headline"`
 	About     *string `json:"about"`
+	Profile   *string `json:"profile"`
+	Banner    *string `json:"banner"`
 }
 
 type Education struct {
@@ -79,15 +88,22 @@ type Job struct {
 	Userid   float64 `json:"userid"`
 }
 
+type Like struct {
+	ID     string  `json:"id"`
+	Userid float64 `json:"userid"`
+	Postid float64 `json:"postid"`
+}
+
 type Location struct {
 	ID        string  `json:"id"`
 	Countryid float64 `json:"countryid"`
 	Cityid    float64 `json:"cityid"`
 }
 
-type Mediatype struct {
-	ID            string `json:"id"`
-	Mediatypename string `json:"mediatypename"`
+type NewComment struct {
+	Userid  float64 `json:"userid"`
+	Postid  float64 `json:"postid"`
+	Comment *string `json:"comment"`
 }
 
 type NewConnect struct {
@@ -137,6 +153,11 @@ type NewJob struct {
 	Userid   float64 `json:"userid"`
 }
 
+type NewLike struct {
+	Userid float64 `json:"userid"`
+	Postid float64 `json:"postid"`
+}
+
 type NewNotification struct {
 	Userid float64 `json:"userid"`
 	Desc   string  `json:"desc"`
@@ -146,6 +167,12 @@ type NewNotification struct {
 type NewPass struct {
 	ID       string `json:"id"`
 	Password string `json:"password"`
+}
+
+type NewPost struct {
+	Userid  float64 `json:"userid"`
+	Media   *string `json:"media"`
+	Caption string  `json:"caption"`
 }
 
 type NewTemporary struct {
@@ -174,9 +201,11 @@ type Notification struct {
 	Date   string  `json:"date"`
 }
 
-type Phonetype struct {
-	ID            string `json:"id"`
-	Phonetypename string `json:"phonetypename"`
+type Post struct {
+	ID      string  `json:"id"`
+	Userid  float64 `json:"userid"`
+	Media   *string `json:"media"`
+	Caption string  `json:"caption"`
 }
 
 type Profileview struct {
@@ -193,16 +222,6 @@ type Pronoun struct {
 type School struct {
 	ID         string `json:"id"`
 	Schoolname string `json:"schoolname"`
-}
-
-type Servicetype struct {
-	ID          string `json:"id"`
-	Servicename string `json:"servicename"`
-}
-
-type Skill struct {
-	ID        string `json:"id"`
-	Skillname string `json:"skillname"`
 }
 
 type Studyfield struct {
@@ -230,7 +249,6 @@ type User struct {
 	Lastname       string   `json:"lastname"`
 	Additionalname *string  `json:"additionalname"`
 	Headline       string   `json:"headline"`
-	Usercontactsid *float64 `json:"usercontactsid"`
 	Password       string   `json:"password"`
 	Profile        *string  `json:"profile"`
 	Banner         *string  `json:"banner"`
@@ -248,18 +266,6 @@ type Userconnection struct {
 	Status        bool    `json:"status"`
 }
 
-type Usercontact struct {
-	ID                string   `json:"id"`
-	Userphonenumberid *float64 `json:"userphonenumberid"`
-	Address           *string  `json:"address"`
-	Birthday          *string  `json:"birthday"`
-}
-
-type Usercurrposition struct {
-	ID           string `json:"id"`
-	Experienceid string `json:"experienceid"`
-}
-
 type Userfollower struct {
 	ID             string  `json:"id"`
 	Userid         float64 `json:"userid"`
@@ -270,29 +276,4 @@ type Userfollowing struct {
 	ID             string  `json:"id"`
 	Userid         float64 `json:"userid"`
 	Useridfollowed float64 `json:"useridfollowed"`
-}
-
-type Userinstantmessaging struct {
-	ID            string  `json:"id"`
-	Usercontactid float64 `json:"usercontactid"`
-	Serviceid     float64 `json:"serviceid"`
-	Username      string  `json:"username"`
-}
-
-type Userphonenumber struct {
-	ID          string  `json:"id"`
-	Phonenumber string  `json:"phonenumber"`
-	Phonetypeid float64 `json:"phonetypeid"`
-}
-
-type Userwebsite struct {
-	ID             string  `json:"id"`
-	Usercontactsid float64 `json:"usercontactsid"`
-	Websitetypeid  float64 `json:"websitetypeid"`
-	Websiteurl     string  `json:"websiteurl"`
-}
-
-type Websitetype struct {
-	ID              string `json:"id"`
-	Websitetypename string `json:"websitetypename"`
 }

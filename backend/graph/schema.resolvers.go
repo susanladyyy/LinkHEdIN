@@ -302,6 +302,8 @@ func (r *mutationResolver) UpdateProfile(ctx context.Context, input model.EditPr
 	upd.Lastname = input.Lastname
 	upd.Headline = *input.Headline
 	upd.About = *input.About
+	upd.Banner = input.Banner
+	upd.Profile = input.Profile
 
 	_, err2 := r.DB.Model(&upd).Where("id = ?", input.ID).UpdateNotNull()
 
@@ -336,6 +338,56 @@ func (r *mutationResolver) DeleteExperience(ctx context.Context, id string) (boo
 	}
 
 	return true, nil
+}
+
+// CreatePost is the resolver for the createPost field.
+func (r *mutationResolver) CreatePost(ctx context.Context, input model.NewPost) (*model.Post, error) {
+	post := model.Post{
+		Userid:  input.Userid,
+		Media:   input.Media,
+		Caption: input.Caption,
+	}
+
+	_, err := r.DB.Model(&post).Insert()
+
+	if err != nil {
+		return nil, errors.New("create post failed")
+	}
+
+	return &post, nil
+}
+
+// CreateComment is the resolver for the createComment field.
+func (r *mutationResolver) CreateComment(ctx context.Context, input *model.NewComment) (*model.Comment, error) {
+	comment := model.Comment{
+		Userid:  input.Userid,
+		Postid:  input.Postid,
+		Comment: *input.Comment,
+	}
+
+	_, err := r.DB.Model(&comment).Insert()
+
+	if err != nil {
+		return nil, errors.New("create comment failed")
+	}
+
+	return &comment, nil
+}
+
+// CreateLike is the resolver for the createLike field.
+func (r *mutationResolver) CreateLike(ctx context.Context, input *model.NewLike) (*model.Like, error) {
+	like := model.Like{
+		Userid: input.Userid,
+		Postid: input.Postid,
+	}
+
+	_, err := r.DB.Model(&like).Insert()
+
+	if err != nil {
+		return nil, errors.New("create like failed")
+	}
+
+	return &like, nil
 }
 
 // Countries is the resolver for the countries field.
@@ -440,71 +492,6 @@ func (r *queryResolver) Studyfields(ctx context.Context) ([]*model.Studyfield, e
 	}
 
 	return studyfields, nil
-}
-
-// Phonetypes is the resolver for the phonetypes field.
-func (r *queryResolver) Phonetypes(ctx context.Context) ([]*model.Phonetype, error) {
-	var phonetypes []*model.Phonetype
-
-	err := r.DB.Model(&phonetypes).Select()
-
-	if err != nil {
-		return nil, errors.New("select phone types failed")
-	}
-
-	return phonetypes, nil
-}
-
-// Websitetypes is the resolver for the websitetypes field.
-func (r *queryResolver) Websitetypes(ctx context.Context) ([]*model.Websitetype, error) {
-	var websitetypes []*model.Websitetype
-
-	err := r.DB.Model(&websitetypes).Select()
-
-	if err != nil {
-		return nil, errors.New("select website types failed")
-	}
-
-	return websitetypes, nil
-}
-
-// Servicetypes is the resolver for the servicetypes field.
-func (r *queryResolver) Servicetypes(ctx context.Context) ([]*model.Servicetype, error) {
-	var servicetypes []*model.Servicetype
-
-	err := r.DB.Model(&servicetypes).Select()
-
-	if err != nil {
-		return nil, errors.New("select service types failed")
-	}
-
-	return servicetypes, nil
-}
-
-// Mediatypes is the resolver for the mediatypes field.
-func (r *queryResolver) Mediatypes(ctx context.Context) ([]*model.Mediatype, error) {
-	var mediatypes []*model.Mediatype
-
-	err := r.DB.Model(&mediatypes).Select()
-
-	if err != nil {
-		return nil, errors.New("select media types failed")
-	}
-
-	return mediatypes, nil
-}
-
-// Skills is the resolver for the skills field.
-func (r *queryResolver) Skills(ctx context.Context) ([]*model.Skill, error) {
-	var skills []*model.Skill
-
-	err := r.DB.Model(&skills).Select()
-
-	if err != nil {
-		return nil, errors.New("select skill failed")
-	}
-
-	return skills, nil
 }
 
 // Users is the resolver for the users field.
@@ -669,6 +656,45 @@ func (r *queryResolver) Experiences(ctx context.Context, id float64) ([]*model.E
 	}
 
 	return exps, nil
+}
+
+// Posts is the resolver for the posts field.
+func (r *queryResolver) Posts(ctx context.Context) ([]*model.Post, error) {
+	var posts []*model.Post
+
+	err := r.DB.Model(&posts).Select()
+
+	if err != nil {
+		return nil, errors.New("select posts failed")
+	}
+
+	return posts, nil
+}
+
+// Comments is the resolver for the comments field.
+func (r *queryResolver) Comments(ctx context.Context, postid float64) ([]*model.Comment, error) {
+	var comments []*model.Comment
+
+	err := r.DB.Model(&comments).Where("postid = ?", postid).Select()
+
+	if err != nil {
+		return nil, errors.New("select comments failed")
+	}
+
+	return comments, nil
+}
+
+// Likes is the resolver for the likes field.
+func (r *queryResolver) Likes(ctx context.Context, postid float64) ([]*model.Like, error) {
+	var likes []*model.Like
+
+	err := r.DB.Model(&likes).Where("postid = ?", postid).Select()
+
+	if err != nil {
+		return nil, errors.New("select likes failed")
+	}
+
+	return likes, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

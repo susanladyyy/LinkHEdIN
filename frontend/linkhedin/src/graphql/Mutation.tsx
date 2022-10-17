@@ -614,3 +614,42 @@ export const UPDATE_THEME = gql`
         }
     }
 `
+
+export const INSERT_MESSAGE = gql`
+    mutation insertMessage (
+        $useridsend: Float!
+        $useridreceive: Float!
+    ) {
+        createUserMessage (
+            input: {
+                useridsend: $useridsend,
+                useridreceive: $useridreceive,
+            }
+        ) {
+            id
+            useridsend
+            useridreceive
+        }
+    }
+`
+
+export const INSERT_USER_MESSAGE = gql`
+    mutation insertMessage (
+        $useridsend: Float!
+        $useridreceive: Float!
+        $message: String!
+    ) {
+        createUserMessageBubble (
+            input: {
+                useridsend: $useridsend,
+                useridreceive: $useridreceive,
+                message: $message
+            }
+        ) {
+            id
+            useridsend
+            useridreceive
+            message
+        }
+    }
+`

@@ -4,6 +4,105 @@
     .message-comp {
         background-color: $linkedin_cream;
         min-height: 100vh;
+        display: flex;
+        flex-direction: row;
+
+        .left {
+            background-color: $white;
+            margin: 20px;
+            border-radius: 10px;
+
+            .searchBar {
+                margin: 20px 50px;
+
+                i {
+                    position: absolute;
+                    padding: 8px;
+                    text-align: center;
+                    color: $dark_gray;
+                }
+    
+                input {
+                    border: none;
+                    height: 35px;
+                    width: 500px;
+                    padding: 0px 30px;
+                    border-radius: 5px;
+                    background-color: $linkedin_blue_light;
+                    color: $black;
+                }
+            }
+
+            overflow-y: scroll;
+
+            .user-list {
+                margin: 20px 50px;
+                background-color: $white;
+                padding: 5px;
+
+                .user-info {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+
+                    img {
+                        border-radius: 50%;
+                        padding: 5px 10px;
+                    }
+                    p {
+                        padding: 5px 10px;
+                    }
+
+                    a {
+                        text-decoration: none;
+                        color: $black;
+                    }
+                }
+            }
+        }
+
+        .right {
+            background-color: $white;
+            margin: 20px;
+            border-radius: 10px;
+            width: 800px;
+
+            .chat-room {
+                overflow-y: scroll;
+                height: 600px;
+                .sender, .recipient {
+                    padding: 10px 30px;
+                    border-radius: 10px;
+                }
+                .sender {
+                    background-color: $linkedin_cream;
+                    margin: 20px;
+                    margin-left: 50px;
+                }
+                .recipient {
+                    background-color: $linkedin_blue;
+                    margin: 20px;
+                    margin-right: 50px;
+                }
+            }
+
+            .send-message {
+                input[type="text"] {
+                    width: 80%;
+                    padding: 8px;
+                    border-radius: 10px;
+                    margin: 3px 25px;
+                }
+
+                input[type="submit"] {
+                    padding: 8px;
+                    border-radius: 10px;
+                    background-color: $accent_blue;
+                    border: none;
+                    width: 10%;
+                }
+            }
+        }
     }
 }
 
@@ -11,5 +110,103 @@
     .message-comp {
         background-color: $linkedin_gray_dark;
         min-height: 100vh;
+        display: flex;
+        flex-direction: row;
+
+        .left {
+            background-color: $black;
+            margin: 20px;
+            border-radius: 10px;
+
+            .searchBar {
+                margin: 20px 50px;
+                i {
+                    position: absolute;
+                    padding: 8px;
+                    text-align: center;
+                    color: $white;
+                }
+    
+                input {
+                    border: none;
+                    height: 35px;
+                    width: 500px;
+                    padding: 0px 30px;
+                    border-radius: 5px;
+                    background-color: $linkedin_blue_light;
+                    color: $white;
+                }
+            }
+
+            overflow-y: scroll;
+            
+            .user-list {
+                margin: 20px 50px;
+                background-color: $black;
+                padding: 5px;
+
+                .user-info {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+
+                    img {
+                        border-radius: 50%;
+                        padding: 5px 10px;
+                    }
+                    p {
+                        padding: 5px 10px;
+                    }
+
+                    a {
+                        text-decoration: none;
+                        color: $white;
+                    }
+                }
+            }
+        }
+
+        .right {
+            background-color: $black;
+            margin: 20px;
+            border-radius: 10px;
+            width: 800px;
+
+            .chat-room {
+                overflow-y: scroll;
+                height: 600px;
+                .sender, .recipient {
+                    padding: 10px 30px;
+                    border-radius: 10px;
+                }
+                .sender {
+                    background-color: $white;
+                    margin: 20px;
+                    margin-left: 50px;
+                }
+                .recipient {
+                    background-color: $linkedin_blue;
+                    margin: 20px;
+                    margin-right: 50px;
+                }
+            }
+
+            .send-message {
+                input[type="text"] {
+                    width: 80%;
+                    padding: 8px;
+                    border-radius: 10px;
+                    margin: 3px 25px;
+                }
+
+                input[type="submit"] {
+                    padding: 8px;
+                    border-radius: 10px;
+                    background-color: $accent_blue;
+                    border: none;
+                    width: 10%;
+                }
+            }
+        }
     }
 }

@@ -180,6 +180,19 @@ type Commentreplylike {
   commentreplyid : Float!
 }
 
+type Message {
+  id : ID!
+  useridsend : Float!
+  useridreceive : Float!
+}
+
+type Usermessage {
+  id : ID!
+  useridsend : Float!
+  useridreceive : Float!
+  message : String!
+}
+
 type Query {
   countries: [Country!]!
   cities: [City!]!
@@ -207,6 +220,8 @@ type Query {
   userblocks (id: Float, blocked: Float): [Userblock!]!
   commentreplies: [Commentreply!]!
   commentreplylikes: [Commentreplylike!]!
+  messages: [Message!]!
+  usermessages: [Usermessage!]!
 }
 
 type Temporary {
@@ -364,6 +379,17 @@ input UpdateTheme {
   theme : Float!
 }
 
+input NewUserMessage {
+  useridsend : Float!
+  useridreceive : Float!
+}
+
+input NewUserMessageBubble {
+  useridsend : Float!
+  useridreceive : Float!
+  message : String!
+}
+
 type Mutation {
   updatePassword(input: NewPass!) : User!
   createUser(input: NewUser!): User!
@@ -399,4 +425,6 @@ type Mutation {
   createCommentReplyLike(input: NewCommentReplyLike) : Commentreplylike!
   deleteCommentReplyLike(userid: Float!, commentreplyid: Float!) : Boolean!
   updateTheme(input: UpdateTheme!) : User!
+  createUserMessage(input: NewUserMessage!) : Message!
+  createUserMessageBubble(input: NewUserMessageBubble) : Usermessage!
 }

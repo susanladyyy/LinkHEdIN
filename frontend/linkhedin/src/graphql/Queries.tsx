@@ -494,3 +494,24 @@ export const GET_COMMENT_REPLY_LIKES = gql`
         }
     }
 `
+
+export const GET_MESSAGES = gql`
+    query messages {
+        messages {
+            id
+            useridsend
+            useridreceive
+        }
+    }
+`
+
+export const GET_USER_MESSAGES = gql`
+    query usermessages {
+        usermessages {
+            id
+            useridsend
+            useridreceive
+            message
+        }
+    }
+`

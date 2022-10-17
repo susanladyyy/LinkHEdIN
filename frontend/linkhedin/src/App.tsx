@@ -65,6 +65,7 @@ function App() {
               <Route path="/edit-education" element={<EditEducation/>} />
               <Route path="/edit-experience" element={<EditExperience/>} />
               <Route path="/edit-profile" element={<EditProfile/>} />
+              <Route path="/messaging/:user" element={<Messaging />} />
           </Routes>
       </BrowserRouter>
     </ApolloProvider>

@@ -551,6 +551,39 @@ func (r *mutationResolver) UpdateTheme(ctx context.Context, input model.UpdateTh
 	return &user, nil
 }
 
+// CreateUserMessage is the resolver for the createUserMessage field.
+func (r *mutationResolver) CreateUserMessage(ctx context.Context, input model.NewUserMessage) (*model.Message, error) {
+	message := model.Message{
+		Useridsend:    input.Useridsend,
+		Useridreceive: input.Useridreceive,
+	}
+
+	_, err := r.DB.Model(&message).Insert()
+
+	if err != nil {
+		return nil, errors.New("insert message failed")
+	}
+
+	return &message, nil
+}
+
+// CreateUserMessageBubble is the resolver for the createUserMessageBubble field.
+func (r *mutationResolver) CreateUserMessageBubble(ctx context.Context, input *model.NewUserMessageBubble) (*model.Usermessage, error) {
+	message := model.Usermessage{
+		Useridsend:    input.Useridsend,
+		Useridreceive: input.Useridreceive,
+		Message:       input.Message,
+	}
+
+	_, err := r.DB.Model(&message).Insert()
+
+	if err != nil {
+		return nil, errors.New("insert message failed")
+	}
+
+	return &message, nil
+}
+
 // Countries is the resolver for the countries field.
 func (r *queryResolver) Countries(ctx context.Context) ([]*model.Country, error) {
 	var countries []*model.Country
@@ -927,6 +960,32 @@ func (r *queryResolver) Commentreplylikes(ctx context.Context) ([]*model.Comment
 	}
 
 	return replyLikes, nil
+}
+
+// Messages is the resolver for the messages field.
+func (r *queryResolver) Messages(ctx context.Context) ([]*model.Message, error) {
+	var messages []*model.Message
+
+	err := r.DB.Model(&messages).Select()
+
+	if err != nil {
+		return nil, errors.New("select messages failed")
+	}
+
+	return messages, nil
+}
+
+// Usermessages is the resolver for the usermessages field.
+func (r *queryResolver) Usermessages(ctx context.Context) ([]*model.Usermessage, error) {
+	var messages []*model.Usermessage
+
+	err := r.DB.Model(&messages).Select()
+
+	if err != nil {
+		return nil, errors.New("select user messages failed")
+	}
+
+	return messages, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

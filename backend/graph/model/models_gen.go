@@ -119,6 +119,12 @@ type Location struct {
 	Cityid    float64 `json:"cityid"`
 }
 
+type Message struct {
+	ID            string  `json:"id"`
+	Useridsend    float64 `json:"useridsend"`
+	Useridreceive float64 `json:"useridreceive"`
+}
+
 type NewComment struct {
 	Userid  float64 `json:"userid"`
 	Postid  float64 `json:"postid"`
@@ -233,6 +239,17 @@ type NewUserBlock struct {
 	Useridblocked float64 `json:"useridblocked"`
 }
 
+type NewUserMessage struct {
+	Useridsend    float64 `json:"useridsend"`
+	Useridreceive float64 `json:"useridreceive"`
+}
+
+type NewUserMessageBubble struct {
+	Useridsend    float64 `json:"useridsend"`
+	Useridreceive float64 `json:"useridreceive"`
+	Message       string  `json:"message"`
+}
+
 type NewView struct {
 	Useridviewed float64 `json:"useridviewed"`
 }
@@ -333,4 +350,11 @@ type Userfollowing struct {
 	ID             string  `json:"id"`
 	Userid         float64 `json:"userid"`
 	Useridfollowed float64 `json:"useridfollowed"`
+}
+
+type Usermessage struct {
+	ID            string  `json:"id"`
+	Useridsend    float64 `json:"useridsend"`
+	Useridreceive float64 `json:"useridreceive"`
+	Message       string  `json:"message"`
 }

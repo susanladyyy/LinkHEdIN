@@ -133,6 +133,8 @@ export const GET_USER_BY_EMAIL = gql`
             profile
             about
             banner
+            theme
+            display
         }
     }
 `
@@ -151,6 +153,8 @@ export const GET_ALL_USERS = gql`
             about
             headline
             banner
+            theme
+            display
         }
     }
 `
@@ -171,6 +175,8 @@ export const GET_USER_BY_URL = gql`
             about
             headline
             banner
+            theme
+            display
         }
     }
 `
@@ -191,6 +197,8 @@ export const SEARCH_USER_BY_NAME = gql`
             about
             headline
             banner
+            theme
+            display
         }
     }
 `
@@ -369,6 +377,7 @@ export const GET_ALL_POST = gql`
             userid
             media
             caption
+            display
         }
     }
 `
@@ -384,12 +393,104 @@ export const GET_COMMENTS = gql`
     }
 `
 
+// export const GET_COMMENTS = gql`
+//     query getComments(
+//         $offset: Int!
+//         $limit:Int!
+//     ){
+//         comments (
+//             offset: $offset
+//             limit: $limit
+//         ){
+//             id
+//             userid
+//             postid
+//             comment
+//         }
+//     }
+// `
+
 export const GET_LIKES = gql`
     query getLikes {
         likes {
             id
             userid
             postid
+        }
+    }
+`
+
+export const GET_COMMENT_LIKES = gql`
+    query getCommentLikes {
+        commentlikes {
+            id
+            commentid
+            userid
+        }
+    }
+`
+
+export const GET_POST_BY_CAPTION = gql`
+    query getPostByCaption (
+        $caption: String
+    ) {
+        posts (
+            title: $caption
+        ) {
+            id
+            userid
+            media
+            caption
+            display
+        }
+    }
+`
+
+export const GET_BLOCK_BY_USER = gql`
+    query getUserBlocks (
+        $id: Float
+    ) {
+        userblocks (
+            id: $id
+        ){
+            id
+            userid
+            useridblocked
+        }
+    }
+`
+
+export const GET_BLOCKED = gql`
+    query getBlocks (
+        $useridblocked: Float
+    ) {
+        userblocks (
+            blocked: $useridblocked
+        ) {
+            id
+            userid
+            useridblocked
+        }
+    }
+`
+
+export const GET_COMMENT_REPLIES = gql`
+    query getCommentReplies {
+        commentreplies {
+            id
+            commentid
+            userid
+            commentreply
+        }
+    }
+`
+
+export const GET_COMMENT_REPLY_LIKES = gql`
+    query getCommentReplyLikes {
+        commentreplylikes {
+            id
+            userid
+            commentreplyid
         }
     }
 `

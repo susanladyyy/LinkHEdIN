@@ -15,6 +15,25 @@ type Comment struct {
 	Comment string  `json:"comment"`
 }
 
+type Commentlike struct {
+	ID        string  `json:"id"`
+	Commentid float64 `json:"commentid"`
+	Userid    float64 `json:"userid"`
+}
+
+type Commentreply struct {
+	ID           string  `json:"id"`
+	Commentid    float64 `json:"commentid"`
+	Userid       float64 `json:"userid"`
+	Commentreply string  `json:"commentreply"`
+}
+
+type Commentreplylike struct {
+	ID             string  `json:"id"`
+	Userid         float64 `json:"userid"`
+	Commentreplyid float64 `json:"commentreplyid"`
+}
+
 type Country struct {
 	ID          string `json:"id"`
 	Countryname string `json:"countryname"`
@@ -106,6 +125,22 @@ type NewComment struct {
 	Comment *string `json:"comment"`
 }
 
+type NewCommentLike struct {
+	Commentid float64 `json:"commentid"`
+	Userid    float64 `json:"userid"`
+}
+
+type NewCommentReply struct {
+	Commentid    float64 `json:"commentid"`
+	Userid       float64 `json:"userid"`
+	Commentreply string  `json:"commentreply"`
+}
+
+type NewCommentReplyLike struct {
+	Userid         float64 `json:"userid"`
+	Commentreplyid float64 `json:"commentreplyid"`
+}
+
 type NewConnect struct {
 	Userid        float64 `json:"userid"`
 	Useridconnect float64 `json:"useridconnect"`
@@ -173,6 +208,7 @@ type NewPost struct {
 	Userid  float64 `json:"userid"`
 	Media   *string `json:"media"`
 	Caption string  `json:"caption"`
+	Display string  `json:"display"`
 }
 
 type NewTemporary struct {
@@ -182,12 +218,19 @@ type NewTemporary struct {
 }
 
 type NewUser struct {
-	Firstname  string `json:"firstname"`
-	Lastname   string `json:"lastname"`
-	Password   string `json:"password"`
-	Profileurl string `json:"profileurl"`
-	Email      string `json:"email"`
-	Activation bool   `json:"activation"`
+	Firstname  string  `json:"firstname"`
+	Lastname   string  `json:"lastname"`
+	Password   string  `json:"password"`
+	Profileurl string  `json:"profileurl"`
+	Email      string  `json:"email"`
+	Activation bool    `json:"activation"`
+	Theme      float64 `json:"theme"`
+	Display    string  `json:"display"`
+}
+
+type NewUserBlock struct {
+	Userid        float64 `json:"userid"`
+	Useridblocked float64 `json:"useridblocked"`
 }
 
 type NewView struct {
@@ -206,6 +249,7 @@ type Post struct {
 	Userid  float64 `json:"userid"`
 	Media   *string `json:"media"`
 	Caption string  `json:"caption"`
+	Display *string `json:"display"`
 }
 
 type Profileview struct {
@@ -242,6 +286,11 @@ type UpdateConnect struct {
 	Status        bool    `json:"status"`
 }
 
+type UpdateTheme struct {
+	ID    string  `json:"id"`
+	Theme float64 `json:"theme"`
+}
+
 type User struct {
 	ID             string   `json:"id"`
 	Pronounsid     *float64 `json:"pronounsid"`
@@ -257,6 +306,14 @@ type User struct {
 	Activation     bool     `json:"activation"`
 	About          string   `json:"about"`
 	Locationid     *float64 `json:"locationid"`
+	Theme          float64  `json:"theme"`
+	Display        *string  `json:"display"`
+}
+
+type Userblock struct {
+	ID            string  `json:"id"`
+	Userid        float64 `json:"userid"`
+	Useridblocked float64 `json:"useridblocked"`
 }
 
 type Userconnection struct {

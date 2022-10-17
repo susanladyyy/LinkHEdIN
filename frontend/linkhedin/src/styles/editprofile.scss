@@ -52,3 +52,55 @@
         }
     }
 }
+
+.edit-pro-dark {
+    min-height: 100vh;
+    background-color: $linkedin_gray_dark;
+
+    .edit-pro-form {
+        h1.title {
+            text-align: center;
+            margin: 30px 0px;
+            color: $dark_gray;
+        }
+
+        .form {
+            @include centralizedFlex();
+            @include divCentralized();
+
+            .edit-pro {
+                margin-bottom: 50px;
+                width: 650px;
+
+                .error {
+                    color: $accent_red;
+                }
+
+                .label {
+                    color: $dark_gray;
+                    margin: 10px 0px;
+                }
+
+                .input {
+                    input, textarea, select {
+                        width: 100%;
+                        border: none;
+                        border-radius: 10px;
+                        padding: 10px;
+                    }
+
+                    .submit-pro {
+                        margin: 30px 0px;
+                        color: white;
+                        background-color: $accent_blue;
+                        cursor: pointer;
+                    }
+
+                    .submit-pro:hover {
+                        background-color: $linkedin_blue;
+                    }
+                }
+            }
+        }
+    }
+}

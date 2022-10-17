@@ -204,6 +204,10 @@
                             img {
                                 width: 150px;
                             }
+
+                            video {
+                                width: 150px;
+                            }
                         }
                     }
                 }
@@ -235,11 +239,16 @@
                             p {
                                 padding: 5px 10px;
                             }
+
+                            a {
+                                text-decoration: none;
+                                color: black;
+                            }
                         }
                     }
     
                     .card-body {
-                        img {
+                        img, video {
                             width: 100%;
                             height: auto;
                             padding: 10px 0px;
@@ -256,10 +265,14 @@
                     }
     
                     .card-footer {    
-                        .comment, .likes {
+                        .comment, .likes, .commnet-likes {
                             color: $dark_gray;
                             font-weight: 600;
                             padding: 5px 10px;
+                        }
+
+                        .comment-likes {
+                            float: right;
                         }
     
                         .comment a {
@@ -293,6 +306,72 @@
                                 p {
                                     padding: 5px 10px;
                                 }
+
+                                a {
+                                    text-decoration: none;
+                                    color: black;
+                                }
+
+                                .delete {
+                                    font-size: 0.8em;
+                                    color: red;
+                                    cursor: pointer;
+                                }
+
+                                .delete:hover {
+                                    text-decoration: underline;
+                                }
+                            }
+
+                            .replies {
+                                .reply-title {
+                                    margin: 0px 15px;
+                                    display: flex;
+                                    align-items: center;
+
+                                    h5 {
+                                        margin-right: 10px;
+                                        margin-top: 10px;
+                                    }
+
+                                    button {
+                                        border: none;
+                                        background-color: transparent;
+                                        text-decoration: underline;
+                                        cursor: pointer;
+                                        color: $dark_gray;
+                                        margin-top: 10px;
+                                    }
+                                }
+
+                                .list-reply {
+                                    margin: 3px 25px;
+
+                                    .reply-likes {
+                                        float: right;
+                                        cursor: pointer;
+                                    }
+                                }
+                            }
+
+                            .reply-input {
+                                margin: 10px 0px;
+                                input[type=text] {
+                                    padding: 6px;
+                                    width: 85%;
+                                    margin-right: 20px;
+                                    border-radius: 10px;
+                                }
+
+                                input[type=submit] {
+                                    padding: 8px;
+                                    background-color: $accent_blue;
+                                    color: white;
+                                    border: none;
+                                    border-radius: 10px;
+                                    width: 11%;
+                                    cursor: pointer;
+                                }
                             }
                         }
 
@@ -301,7 +380,9 @@
                             flex-direction: column;
                             
                             textarea {
-                                margin: 10px 0px;
+                                margin: 10px 10px;
+                                padding: 10px;
+                                border-radius: 10px;
                             }
 
                             input {
@@ -311,6 +392,7 @@
                                 padding: 10px;
                                 border: none;
                                 color: white;
+                                margin: 10px 10px;
                             }
                         }
                     }
@@ -324,6 +406,429 @@
                 .see-whos-hiring {
                     margin: 10px 50px 10px 10px;
                     background-color: $white;
+                    padding: 0px 10px;
+                    border-radius: 10px;
+
+                    img {
+                        width: 100%;
+                        height: auto;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.home-dark {
+    background-color: $linkedin_gray_dark;
+    min-height: 100vh;
+
+    .profile-modal {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .home-content {
+        display: flex;
+        justify-content: space-between;
+        
+        .left-home {
+            margin-left: 10%;
+            margin-top: 10px;
+            width: 30%;
+            padding: 0px 10px;
+
+            .mini-profile {
+                width: 60%;
+                position: relative;
+                display: flex;
+                flex-direction: column;
+        
+                .top {
+                    .banner {
+                        img {
+                            width: 100%;
+                            height: auto;
+                            border-top-left-radius: 10px;
+                            border-top-right-radius: 10px;
+                        }
+                    }
+            
+                    .profile {
+                        position: absolute;
+                        z-index: 1;
+                        top: 3.5%;
+                        left: 32%;
+            
+                        img {
+                            border-radius: 50%;
+                            width: 50%;
+                            height: auto;
+                        }
+
+                        img.db {
+                            height: 90px;
+                        }
+                    }
+            
+                    .profile-data {
+                        background-color:$black;
+                        width: 100%;
+                        margin-top: -4px;
+                        border-bottom-left-radius: 10px;
+                        border-bottom-right-radius: 10px;
+                        padding: 10px;
+                        text-align: center;
+                        color: $white;
+            
+                        hr {
+                            color: $medium_gray;
+                            margin-top: 10px;
+                            margin-bottom: 10px;
+                        }
+            
+                        .name {
+                            margin-top: 50px;
+                        }
+            
+                        p {
+                            margin: 10px;
+                        }
+            
+                        .connections, .invitations {
+                            display: flex;
+                            flex-direction: row;
+                            justify-content: space-between;
+            
+                            .no-con, .no-inv {
+                                @include richText(1em);
+                                cursor: pointer;
+                            }
+                        }
+            
+                        .try-premium {
+            
+                            text-align: left;
+                            font-size: 0.8em;
+            
+                            p {
+                                color: $medium_gray;
+                            }
+            
+                            a {
+                                text-decoration: none;
+                                color: $white;
+                                font-weight: 600;
+                                margin-left: 8px;
+                            }
+                        }
+            
+                        .my-items {
+                            i {
+                                color: $medium_gray;
+                                font-size: 1.3em;
+                            }
+            
+                            display: flex;
+                            align-items: center;
+                            p {
+                                font-size: 0.8em;
+                                font-weight: 600;
+                            }
+                        }
+                    }
+                }
+        
+                .bottom {
+                    background-color: $black;
+                    width: 100%;
+                    height: auto;
+                    margin-top: 15px;
+                    border-radius: 10px;
+                    padding: 10px;
+        
+                    p {
+                        margin-top: 10px;
+                        margin-bottom: 15px;
+                        @include richText(0.8em)
+                    }
+        
+                    .events {
+                        i {
+                            columns: $medium_gray;
+                            float: right;
+                        }
+                    }
+        
+                    .discover {
+                        text-align: center;
+                        margin-top: 10px;
+        
+                        a {
+                            color: $medium_gray;
+                            font-weight: 600;
+                            text-decoration: none;
+                        }
+                    }
+                }
+            }
+        }
+
+        .middle-home {
+            margin-left: -140px;
+            width: 40%;
+
+            .start-post-home {
+                background-color: $black;
+                padding: 20px;
+                margin: 10px 0px 10px 0px;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-evenly;
+                border-radius: 10px;
+
+                .profile {
+                    margin: 0px 10px 0px 0px;
+                    img {
+                        width: 35px;
+                        border-radius: 50%;
+                    }
+                }
+
+                .post-button-form {
+                    button {
+                        background-color: $white;
+                        border: 1px $light_gray_light solid;
+                        border-radius: 30px;
+                        padding: 10px;
+                        width: 400px;
+                        cursor: pointer;
+                        text-align: left;
+                        color: $dark_gray;
+                    }
+
+                    button:hover {
+                        background-color: $light_gray_light;
+                    }
+                }
+            }
+
+            .create-post {
+                .card {
+                    .card-body {
+                        .media {
+                            img {
+                                width: 150px;
+                            }
+                            video {
+                                width: 150px;
+                            }
+                        }
+
+                        textarea {
+                            z-index: 10;
+                        }
+                    }
+                }
+            }
+
+            .posts {
+                .card {
+                    background-color: $black;
+                    padding: 20px 0px;
+                    margin: 20px 0px;
+                    display: flex;
+                    flex-direction: column;
+                    border-radius: 10px;
+                    color: $white;
+
+                    .likeno {
+                        display: none;
+                    }
+    
+                    .card-header {
+                        .user-info {
+                            display: flex;
+                            flex-direction: row;
+                            align-items: center;
+
+                            img {
+                                border-radius: 50%;
+                                padding: 5px 10px;
+                            }
+                            p {
+                                padding: 5px 10px;
+                            }
+
+                            a {
+                                text-decoration: none;
+                                color: $white;
+                            }
+                        }
+                    }
+    
+                    .card-body {
+                        img, video {
+                            width: 100%;
+                            height: auto;
+                            padding: 10px 0px;
+                        }
+
+                        .capt {
+                            padding: 1px 10px;
+                            font-size: 0.9em;
+                            color: $medium_gray;
+                        }
+                        .caption {
+                            padding: 10px;
+                        }
+                    }
+    
+                    .card-footer {    
+                        .comment, .likes, .commnet-likes {
+                            color: $dark_gray;
+                            font-weight: 600;
+                            padding: 5px 10px;
+                        }
+
+                        .comment-likes {
+                            float: right;
+                        }
+    
+                        .comment a {
+                            text-decoration: none;
+                            color: $dark_gray;
+                            cursor: pointer;
+                        }
+    
+                        .comment a:hover {
+                            color: $accent_blue;
+                        }
+
+                        .comment-list {
+                            padding: 10px;
+                            height: 200px;
+                            overflow: scroll;
+
+                            p {
+                                padding: 5px 15px;
+                            }
+
+                            .user-info {
+                                display: flex;
+                                flex-direction: row;
+                                align-items: center;
+    
+                                img {
+                                    border-radius: 50%;
+                                    padding: 5px 10px;
+                                }
+                                p {
+                                    padding: 5px 10px;
+                                }
+
+                                a {
+                                    text-decoration: none;
+                                    color: $white;
+                                }
+
+                                .delete {
+                                    font-size: 0.8em;
+                                    color: red;
+                                    cursor: pointer;
+                                }
+
+                                .delete:hover {
+                                    text-decoration: underline;
+                                }
+                            }
+
+                            .replies {
+                                .reply-title {
+                                    margin: 0px 15px;
+                                    display: flex;
+                                    align-items: center;
+
+                                    h5 {
+                                        margin-right: 10px;
+                                        margin-top: 10px;
+                                    }
+
+                                    button {
+                                        border: none;
+                                        background-color: transparent;
+                                        text-decoration: underline;
+                                        cursor: pointer;
+                                        color: $dark_gray;
+                                        margin-top: 10px;
+                                    }
+                                }
+
+                                .list-reply {
+                                    margin: 3px 25px;
+
+                                    .reply-likes {
+                                        float: right;
+                                        cursor: pointer;
+                                    }
+                                }
+                            }
+
+                            .reply-input {
+                                margin: 10px 0px;
+                                input[type=text] {
+                                    padding: 6px;
+                                    width: 85%;
+                                    margin-right: 20px;
+                                    border-radius: 10px;
+                                }
+
+                                input[type=submit] {
+                                    padding: 8px;
+                                    background-color: $accent_blue;
+                                    color: white;
+                                    border: none;
+                                    border-radius: 10px;
+                                    width: 10%;
+                                    cursor: pointer;
+                                }
+                            }
+                        }
+
+                        .new-comment {
+                            display: flex;
+                            flex-direction: column;
+                            
+                            textarea {
+                                margin: 10px 10px;
+                                padding: 10px;
+                                border-radius: 10px;
+                            }
+
+                            input {
+                                background-color: $accent_blue;
+                                cursor: pointer;
+                                border-radius: 10px;
+                                padding: 10px;
+                                border: none;
+                                color: white;
+                                margin: 10px 10px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .right-home {
+            width: 25%;
+            .right {
+                .see-whos-hiring {
+                    margin: 10px 50px 10px 10px;
+                    background-color: $black;
                     padding: 0px 10px;
                     border-radius: 10px;
 

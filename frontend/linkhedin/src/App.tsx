@@ -16,10 +16,18 @@ import SearchPage from "./pages/SearchPage"
 import EditEducation from "./pages/EditEducation"
 import EditExperience from "./pages/EditExperience"
 import EditProfile from "./pages/EditProfile"
-import Comment from "./pages/Comment"
+import { offsetLimitPagination } from "@apollo/client/utilities"
 
 const client = new ApolloClient({
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          posts: offsetLimitPagination(),
+        }
+      }
+    }
+  }),
   // uri: "http://localhost:8080/query"
   link: createHttpLink({
     uri: "http://localhost:8080/query",

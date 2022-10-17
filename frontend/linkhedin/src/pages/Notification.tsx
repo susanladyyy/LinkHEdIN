@@ -6,7 +6,8 @@ import NotificationView from '../components/notification/NotificationView'
 import '../styles/notification.scss'
 
 export default function Notification() {
-    const [cookies, setCookie, removeCookie] = useCookies(['user-login'])
+    const [cookies, setCookie, removeCookie] = useCookies(['user-login', 'user-theme'])
+    const theme = cookies['user-theme']
 
     useEffect(() => {
         if(cookies['user-login'] == null) {
@@ -18,13 +19,28 @@ export default function Notification() {
     
     return (
         <>
-            <div className='notification-page'>
-                <Header />
+            {
+                theme == 1 ? 
+                <>
+                    <div className='notification-page'>
+                        <Header />
 
-                <NotificationView />
-            </div>
+                        <NotificationView />
+                    </div>
 
-            <Footer />
+                    <Footer />
+                </>
+                :
+                <>
+                    <div className='notif-dark'>
+                        <Header />
+
+                        <NotificationView />
+                    </div>
+
+                    <Footer />
+                </>
+            }
         </>
     )
 }

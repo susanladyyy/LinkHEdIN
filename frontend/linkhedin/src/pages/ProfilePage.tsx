@@ -7,8 +7,9 @@ import ProfileView from '../components/profile/ProfileView'
 import '../styles/profile/profile.scss'
 
 export default function ProfilePage() {
-    const [cookies, setCookie, removeCookie] = useCookies(['user-login'])
+    const [cookies, setCookie, removeCookie] = useCookies(['user-login', 'user-theme'])
     const navigate = useNavigate()
+    const theme = cookies['user-theme']
 
     useEffect(() => {
         if(cookies['user-login'] == null) {
@@ -21,13 +22,24 @@ export default function ProfilePage() {
 
     return (
         <>
-            <div>
-                <Header />
+            {
+                theme == 1 ? 
+                <div className='profile-page'>
+                    <Header />
 
-                <ProfileView />
+                    <ProfileView />
 
-                <Footer />
-            </div>
+                    <Footer />
+                </div>
+                :
+                <div className='profile-dark'>
+                    <Header />
+
+                    <ProfileView />
+
+                    <Footer />
+                </div>
+            }
         </>
     )
 }

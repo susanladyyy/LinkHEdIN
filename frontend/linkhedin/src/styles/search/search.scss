@@ -3,11 +3,15 @@
 .search-page {
     background-color: $linkedin_cream;
     min-height: 100vh;
+    padding-bottom: 20px;
 
     .search-user {
+        margin: auto;
+        width: 60%;
+        
         .search-profile {
             margin: 20px auto;
-            width: 80%;
+            width: 100%;
             background-color: $white;
             border-radius: 10px;
             padding: 10px;
@@ -55,4 +59,178 @@
             }
         }
     }
+
+    .search-post {
+        margin: auto;
+        width: 60%;
+
+        .card {
+            background-color: $white;
+            padding: 20px 0px;
+            margin: 20px 0px;
+            display: flex;
+            flex-direction: column;
+            border-radius: 10px;
+
+            .likeno {
+                display: none;
+            }
+
+            .card-header {
+                .user-info {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+
+                    img {
+                        border-radius: 50%;
+                        padding: 5px 10px;
+                    }
+                    p {
+                        padding: 5px 10px;
+                    }
+
+                    a {
+                        text-decoration: none;
+                        color: black;
+                    }
+                }
+            }
+
+            .card-body {
+                img {
+                    width: 100%;
+                    height: auto;
+                    padding: 10px 0px;
+                }
+
+                .capt {
+                    padding: 1px 10px;
+                    font-size: 0.9em;
+                    color: $medium_gray;
+                }
+                .caption {
+                    padding: 10px;
+                }
+            }
+        }
+    }
+}
+
+.search-page-dark {
+    background-color: $linkedin_gray_dark;
+    min-height: 100vh;
+    padding-bottom: 20px;
+
+    .search-user {
+        margin: auto;
+        width: 60%;
+        
+        .search-profile {
+            margin: 20px auto;
+            width: 100%;
+            background-color: $black;
+            border-radius: 10px;
+            padding: 10px;
+
+            button {
+                float: right;
+                padding: 5px 30px;
+                background-color: $black;
+                border: 1px $linkedin_blue solid;
+                border-radius: 30px;
+                color: $linkedin_blue;
+                cursor: pointer;
+                margin: 0px 10px;
+            }
+
+            button.withdraw {
+                background-color: $black;
+                color: $medium_gray;
+                border: solid 1px $medium_gray
+            }
+
+            button:hover {
+                background-color: $accent_blue;
+                color: $dark_gray;
+                border: none;
+            }
+
+            button.withdraw:hover {
+                background-color: $light_gray;
+                color: $dark_gray;
+                border: none;
+            }
+            
+            p {
+                padding: 10px 0px;
+                color: $linkedin_blue;
+            }
+
+            p.withdraw {
+                color: $medium_gray;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+        }
+    }
+
+    .search-post {
+        margin: auto;
+        width: 60%;
+
+        .card {
+            background-color: $black;
+            padding: 20px 0px;
+            margin: 20px 0px;
+            display: flex;
+            flex-direction: column;
+            border-radius: 10px;
+
+            .likeno {
+                display: none;
+            }
+
+            .card-header {
+                .user-info {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+
+                    img {
+                        border-radius: 50%;
+                        padding: 5px 10px;
+                    }
+                    p {
+                        padding: 5px 10px;
+                    }
+
+                    a {
+                        text-decoration: none;
+                        color: $white;
+                    }
+                }
+            }
+
+            .card-body {
+                img {
+                    width: 100%;
+                    height: auto;
+                    padding: 10px 0px;
+                }
+
+                .capt {
+                    padding: 1px 10px;
+                    font-size: 0.9em;
+                    color: $medium_gray;
+                }
+                .caption {
+                    padding: 10px;
+                }
+            }
+        }
+    }
+    color: $white;
 }

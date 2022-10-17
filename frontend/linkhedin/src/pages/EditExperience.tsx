@@ -6,7 +6,8 @@ import Header from '../components/Header'
 import '../styles/editexperience.scss'
 
 export default function EditExperience() {
-    const [cookies, setCookie, removeCookie] = useCookies(['user-login'])
+    const [cookies, setCookie, removeCookie] = useCookies(['user-login', 'user-theme'])
+    const theme = cookies['user-theme']
 
     useEffect(() => {
         if(cookies['user-login'] == null) {
@@ -18,13 +19,27 @@ export default function EditExperience() {
     
     return (
         <>
-            <div className='edit-experience'>
-                <Header />
+            { theme == 1 ? 
+                <>
+                    <div className='edit-experience'>
+                        <Header />
 
-                <EditExpForm />
-            </div>
-            
-            <Footer />
+                        <EditExpForm />
+                    </div>
+                    
+                    <Footer />
+                </>
+                :
+                <>
+                    <div className='edit-exp-dark'>
+                        <Header />
+
+                        <EditExpForm />
+                    </div>
+                    
+                    <Footer />
+                </>
+            }
         </>
     )
 }

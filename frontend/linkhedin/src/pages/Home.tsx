@@ -10,8 +10,9 @@ import Post from '../components/post/Post'
 import Footer from '../components/Footer'
 
 export default function Home() {
-    const [cookies, setCookie, removeCookie] = useCookies(['user-login'])
+    const [cookies, setCookie, removeCookie] = useCookies(['user-login', 'user-theme'])
     const navigate = useNavigate()
+    const theme = cookies['user-theme']
 
     useEffect(() => {
         if(cookies['user-login'] == null) {
@@ -23,29 +24,59 @@ export default function Home() {
 
     return (
         <>
-            <div className='home'>
-                <Header />
+            { theme == 1 ?
+                <>
+                    <div className='home'>
+                        <Header />
 
-                <div className="home-content">
-                    <div className="left-home">
-                        <Miniprofile />
-                    </div>
-                    <div className="middle-home">
-                        <div className="start-post">
-                            <StartPost />
-                            <hr />
+                        <div className="home-content">
+                            <div className="left-home">
+                                <Miniprofile />
+                            </div>
+                            <div className="middle-home">
+                                <div className="start-post">
+                                    <StartPost />
+                                    <hr />
+                                </div>
+                                <div className="posts">
+                                    <Post />
+                                </div>
+                            </div>
+                            <div className="right-home">
+                                <Right />
+                            </div>
                         </div>
-                        <div className="posts">
-                            <Post />
+                    </div> 
+                    
+                    <Footer />
+                </>
+                :
+                <>
+                    <div className='home-dark'>
+                        <Header />
+
+                        <div className="home-content">
+                            <div className="left-home">
+                                <Miniprofile />
+                            </div>
+                            <div className="middle-home">
+                                <div className="start-post">
+                                    <StartPost />
+                                    <hr />
+                                </div>
+                                <div className="posts">
+                                    <Post />
+                                </div>
+                            </div>
+                            <div className="right-home">
+                                <Right />
+                            </div>
                         </div>
-                    </div>
-                    <div className="right-home">
-                        <Right />
-                    </div>
-                </div>
-            </div> 
-            
-            <Footer />
+                    </div> 
+                    
+                    <Footer />
+                </>
+            }
         </>
     )
 }

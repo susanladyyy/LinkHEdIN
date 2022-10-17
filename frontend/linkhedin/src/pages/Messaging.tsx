@@ -6,7 +6,8 @@ import Message from '../components/message/Message'
 import '../styles/messaging.scss'
 
 export default function Messaging() {
-    const [cookies, setCookie, removeCookie] = useCookies(['user-login'])
+    const [cookies, setCookie, removeCookie] = useCookies(['user-login', 'user-theme'])
+    const theme = cookies['user-theme']
 
     useEffect(() => {
         if(cookies['user-login'] == null) {
@@ -17,12 +18,25 @@ export default function Messaging() {
     }, [cookies])  
     
     return (
-        <div>
-            <Header />
+        <>
+            {
+                theme == 1 ? 
+                <div className='message-page'>
+                    <Header />
 
-            <Message />
+                    <Message />
 
-            <Footer />
-        </div>
+                    <Footer />
+                </div>
+                :
+                <div className='message-page-dark'>
+                    <Header />
+
+                    <Message />
+
+                    <Footer />
+                </div>
+            }
+        </>
     )
 }

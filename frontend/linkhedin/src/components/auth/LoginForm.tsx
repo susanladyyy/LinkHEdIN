@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { GET_USER_BY_EMAIL } from '../../graphql/Queries'
 import { useCookies } from 'react-cookie'
@@ -10,7 +10,7 @@ export default function LoginForm() {
     const[password, setPassword] = useState("")
     const [errorMsg, setErrorMsg] = useState(" ")
     const navigate = useNavigate()
-    const [cookies, setCookie] = useCookies(['user-login-id', 'user-login'])
+    const [cookies, setCookie] = useCookies(['user-login-id', 'user-login', 'user-theme'])
     const[showPass, setShowPass] = useState(false)
 
     const {error, loading, data} = useQuery(GET_USER_BY_EMAIL, {
@@ -63,6 +63,8 @@ export default function LoginForm() {
 
         setCookie('user-login', data_parse['users'][0].profileurl, {expires: exp})
         setCookie('user-login-id', data_parse['users'][0].id, {expires: exp})
+        setCookie('user-theme', data_parse['users'][0].theme, {expires: exp})
+
         navigate('/home')
     }
 
@@ -114,7 +116,7 @@ export default function LoginForm() {
                 }
 
                 <div className="forgot-password">
-                <p><Link to={'/forgot-password'}>Forgot Password?</Link></p>
+                    <p><Link to={'/forgot-password'}>Forgot Password?</Link></p>
                 </div>
 
                 <div className="form-input-group submit-button">

@@ -7,7 +7,8 @@ import MightKnow from '../components/network/MightKnow'
 import '../styles/network.scss'
 
 export default function MyNetwork() {
-    const [cookies, setCookie, removeCookie] = useCookies(['user-login'])
+    const [cookies, setCookie, removeCookie] = useCookies(['user-login', 'user-theme'])
+    const theme = cookies['user-theme']
 
     useEffect(() => {
         if(cookies['user-login'] == null) {
@@ -18,16 +19,33 @@ export default function MyNetwork() {
     }, [cookies])  
     
     return (
-        <>
-            <div className='my-network'>
-                <Header />
+        <div className='network-page'>
+            {
+                theme == 1 ? 
+                <>
+                    <Header />
+                    
+                    <div className='my-network'>
+                        <Invitations />
 
-                <Invitations />
+                        <MightKnow />
+                    </div>
+                    
+                    <Footer />
+                </>
+                :
+                <>
+                    <Header />
+                    
+                    <div className='network-dark'>
+                        <Invitations />
 
-                <MightKnow />
-            </div>
-            
-            <Footer />
-        </>
+                        <MightKnow />
+                    </div>
+                    
+                    <Footer />
+                </>
+            }
+        </div>
     )
 }

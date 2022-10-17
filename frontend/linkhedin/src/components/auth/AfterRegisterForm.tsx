@@ -1,8 +1,8 @@
 import { useMutation, useQuery } from '@apollo/client'
 import React, { useState, createRef, useRef, useEffect, useDebugValue } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { CREATE_USER, CREATE_TEMPORARY, DELETE_TEMPORARY } from '../../graphql/Mutation'
-import { GET_ALL_TEMPS, GET_ALL_USERS } from '../../graphql/Queries'
+import { CREATE_USER, DELETE_TEMPORARY } from '../../graphql/Mutation'
+import { GET_ALL_TEMPS } from '../../graphql/Queries'
 
 export default function AfterRegisterForm() {
 
@@ -62,7 +62,9 @@ export default function AfterRegisterForm() {
                 password: password,
                 profileurl: url,
                 email: email,
-                activation: true
+                activation: true,
+                theme: 1,
+                display: `@${firstName.toLowerCase()}${lastName.toLowerCase()}`
             }
         })
     }

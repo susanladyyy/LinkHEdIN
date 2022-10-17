@@ -35,6 +35,8 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 		Profileurl: input.Profileurl,
 		Email:      input.Email,
 		Activation: input.Activation,
+		Theme:      input.Theme,
+		Display:    &input.Display,
 	}
 
 	_, err := r.DB.Model(&user).Insert()
@@ -346,6 +348,7 @@ func (r *mutationResolver) CreatePost(ctx context.Context, input model.NewPost) 
 		Userid:  input.Userid,
 		Media:   input.Media,
 		Caption: input.Caption,
+		Display: &input.Display,
 	}
 
 	_, err := r.DB.Model(&post).Insert()
@@ -391,16 +394,161 @@ func (r *mutationResolver) CreateLike(ctx context.Context, input *model.NewLike)
 }
 
 // DeleteLike is the resolver for the deleteLike field.
-func (r *mutationResolver) DeleteLike(ctx context.Context, id string) (bool, error) {
+func (r *mutationResolver) DeleteLike(ctx context.Context, id string, userid string) (bool, error) {
 	var like model.Like
 
-	_, err := r.DB.Model(&like).Where("postid = ?", id).Delete()
+	_, err := r.DB.Model(&like).Where("userid = ? and postid = ?", userid, id).Delete()
 
 	if err != nil {
 		return false, errors.New("delete like failed")
 	}
 
 	return true, nil
+}
+
+// DeleteComment is the resolver for the deleteComment field.
+func (r *mutationResolver) DeleteComment(ctx context.Context, id string) (bool, error) {
+	var comment model.Comment
+
+	_, err := r.DB.Model(&comment).Where("id = ?", id).Delete()
+
+	if err != nil {
+		return false, errors.New("delete comment failed")
+	}
+
+	return true, nil
+}
+
+// CreateCommentLike is the resolver for the createCommentLike field.
+func (r *mutationResolver) CreateCommentLike(ctx context.Context, input model.NewCommentLike) (*model.Commentlike, error) {
+	com := model.Commentlike{
+		Commentid: input.Commentid,
+		Userid:    input.Userid,
+	}
+
+	_, err := r.DB.Model(&com).Insert()
+
+	if err != nil {
+		return nil, errors.New("insert comment likes failed")
+	}
+
+	return &com, nil
+}
+
+// DeleteCommentLike is the resolver for the deleteCommentLike field.
+func (r *mutationResolver) DeleteCommentLike(ctx context.Context, commentid float64, userid float64) (bool, error) {
+	var com model.Commentlike
+
+	_, err := r.DB.Model(&com).Where("commentid = ? and userid = ?", commentid, userid).Delete()
+
+	if err != nil {
+		return false, errors.New("delete comment likes failed")
+	}
+
+	return true, nil
+}
+
+// CreateBlock is the resolver for the createBlock field.
+func (r *mutationResolver) CreateBlock(ctx context.Context, input model.NewUserBlock) (*model.Userblock, error) {
+	block := model.Userblock{
+		Userid:        input.Userid,
+		Useridblocked: input.Useridblocked,
+	}
+
+	_, err := r.DB.Model(&block).Insert()
+
+	if err != nil {
+		return nil, errors.New("insert block failed")
+	}
+
+	return &block, nil
+}
+
+// DeleteBlock is the resolver for the deleteBlock field.
+func (r *mutationResolver) DeleteBlock(ctx context.Context, input model.NewUserBlock) (bool, error) {
+	var block model.Userblock
+
+	_, err := r.DB.Model(&block).Where("userid = ? and useridblocked = ?", input.Userid, input.Useridblocked).Delete()
+
+	if err != nil {
+		return false, errors.New("delete block failed")
+	}
+
+	return true, nil
+}
+
+// CreateCommentReply is the resolver for the createCommentReply field.
+func (r *mutationResolver) CreateCommentReply(ctx context.Context, input model.NewCommentReply) (*model.Commentreply, error) {
+	reply := model.Commentreply{
+		Commentid:    input.Commentid,
+		Userid:       input.Userid,
+		Commentreply: input.Commentreply,
+	}
+
+	_, err := r.DB.Model(&reply).Insert()
+
+	if err != nil {
+		return nil, errors.New("insert reply failed")
+	}
+
+	return &reply, nil
+}
+
+// DeleteCommentReply is the resolver for the deleteCommentReply field.
+func (r *mutationResolver) DeleteCommentReply(ctx context.Context, id string) (bool, error) {
+	var reply model.Commentreply
+
+	_, err := r.DB.Model(&reply).Where("id = ?", id).Delete()
+
+	if err != nil {
+		return false, errors.New("delete reply failed")
+	}
+
+	return true, nil
+}
+
+// CreateCommentReplyLike is the resolver for the createCommentReplyLike field.
+func (r *mutationResolver) CreateCommentReplyLike(ctx context.Context, input *model.NewCommentReplyLike) (*model.Commentreplylike, error) {
+	replyLike := model.Commentreplylike{
+		Userid:         input.Userid,
+		Commentreplyid: input.Commentreplyid,
+	}
+
+	_, err := r.DB.Model(&replyLike).Insert()
+
+	if err != nil {
+		return nil, errors.New("insert reply like failed")
+	}
+
+	return &replyLike, nil
+}
+
+// DeleteCommentReplyLike is the resolver for the deleteCommentReplyLike field.
+func (r *mutationResolver) DeleteCommentReplyLike(ctx context.Context, userid float64, commentreplyid float64) (bool, error) {
+	var replyLike model.Commentreplylike
+
+	_, err := r.DB.Model(&replyLike).Where("userid = ? and commentreplyid = ?", userid, commentreplyid).Delete()
+
+	if err != nil {
+		return false, errors.New("delete reply like failed")
+	}
+
+	return true, nil
+}
+
+// UpdateTheme is the resolver for the updateTheme field.
+func (r *mutationResolver) UpdateTheme(ctx context.Context, input model.UpdateTheme) (*model.User, error) {
+	var user model.User
+
+	user.Theme = input.Theme
+
+	_, err2 := r.DB.Model(&user).Where("id = ?", input.ID).UpdateNotNull()
+
+	if err2 != nil {
+		return nil, errors.New("update theme error")
+	}
+
+	return &user, nil
 }
 
 // Countries is the resolver for the countries field.
@@ -694,6 +842,11 @@ func (r *queryResolver) Comments(ctx context.Context) ([]*model.Comment, error) 
 	var comments []*model.Comment
 
 	err := r.DB.Model(&comments).Select()
+	// if offset != nil && limit != nil {
+	// 	err = r.DB.Model(&comments).Offset(offset).Limit(limit).Select()
+	// } else {
+	// 	err = r.DB.Model(&comments).Select()
+	// }
 
 	if err != nil {
 		return nil, errors.New("select comments failed")
@@ -713,6 +866,67 @@ func (r *queryResolver) Likes(ctx context.Context) ([]*model.Like, error) {
 	}
 
 	return likes, nil
+}
+
+// Commentlikes is the resolver for the commentlikes field.
+func (r *queryResolver) Commentlikes(ctx context.Context) ([]*model.Commentlike, error) {
+	var comlikes []*model.Commentlike
+
+	err := r.DB.Model(&comlikes).Select()
+
+	if err != nil {
+		return nil, errors.New("select comment likes failed")
+	}
+
+	return comlikes, nil
+}
+
+// Userblocks is the resolver for the userblocks field.
+func (r *queryResolver) Userblocks(ctx context.Context, id *float64, blocked *float64) ([]*model.Userblock, error) {
+	var blocks []*model.Userblock
+	var err error
+
+	if id != nil && blocked != nil {
+		err = r.DB.Model(&blocks).Where("userid = ? AND useridblocked = ?", id, blocked).Select()
+	} else if id != nil {
+		err = r.DB.Model(&blocks).Where("userid = ?", id).Select()
+	} else if blocked != nil {
+		err = r.DB.Model(&blocks).Where("useridblocked = ?", blocked).Select()
+	} else {
+		err = r.DB.Model(&blocks).Select()
+	}
+
+	if err != nil {
+		return nil, errors.New("select blocks failed")
+	}
+
+	return blocks, nil
+}
+
+// Commentreplies is the resolver for the commentreplies field.
+func (r *queryResolver) Commentreplies(ctx context.Context) ([]*model.Commentreply, error) {
+	var replies []*model.Commentreply
+
+	err := r.DB.Model(&replies).Select()
+
+	if err != nil {
+		return nil, errors.New("select replies failed")
+	}
+
+	return replies, nil
+}
+
+// Commentreplylikes is the resolver for the commentreplylikes field.
+func (r *queryResolver) Commentreplylikes(ctx context.Context) ([]*model.Commentreplylike, error) {
+	var replyLikes []*model.Commentreplylike
+
+	err := r.DB.Model(&replyLikes).Select()
+
+	if err != nil {
+		return nil, errors.New("select reply likes failed")
+	}
+
+	return replyLikes, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

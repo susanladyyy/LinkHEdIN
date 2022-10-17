@@ -90,6 +90,8 @@ type User {
   activation : Boolean!
   about : String!
   locationid : Float
+  theme : Float!
+  display : String
 }
 
 type Userconnection {
@@ -137,6 +139,7 @@ type Post {
   userid : Float!
   media : String
   caption : String!
+  display : String
 }
 
 type Like {
@@ -150,6 +153,31 @@ type Comment {
   userid : Float!
   postid : Float!
   comment : String!
+}
+
+type Commentlike {
+  id : ID!
+  commentid : Float!
+  userid : Float!
+}
+
+type Userblock {
+  id : ID!
+  userid : Float!
+  useridblocked : Float!
+}
+
+type Commentreply {
+  id : ID!
+  commentid : Float!
+  userid : Float!
+  commentreply : String!
+}
+
+type Commentreplylike {
+  id : ID!
+  userid : Float!
+  commentreplyid : Float!
 }
 
 type Query {
@@ -175,6 +203,10 @@ type Query {
   posts (title: String): [Post!]!
   comments: [Comment!]!
   likes: [Like!]!
+  commentlikes: [Commentlike!]!
+  userblocks (id: Float, blocked: Float): [Userblock!]!
+  commentreplies: [Commentreply!]!
+  commentreplylikes: [Commentreplylike!]!
 }
 
 type Temporary {
@@ -191,6 +223,8 @@ input NewUser {
   profileurl : String!
   email : String!
   activation : Boolean!
+  theme : Float!
+  display : String!
 }
 
 input NewTemporary {
@@ -290,6 +324,7 @@ input NewPost {
   userid : Float!
   media : String
   caption : String!
+  display : String!
 }
 
 input NewComment {
@@ -301,6 +336,32 @@ input NewComment {
 input NewLike {
   userid : Float!
   postid : Float!
+}
+
+input NewCommentLike {
+  commentid : Float!
+  userid : Float!
+}
+
+input NewUserBlock {
+  userid : Float!
+  useridblocked : Float!
+}
+
+input NewCommentReply {
+  commentid : Float!
+  userid : Float!
+  commentreply : String!
+}
+
+input NewCommentReplyLike {
+  userid : Float!
+  commentreplyid : Float!
+}
+
+input UpdateTheme {
+  id : ID!
+  theme : Float!
 }
 
 type Mutation {
@@ -327,5 +388,15 @@ type Mutation {
   createPost(input: NewPost!) : Post!
   createComment(input: NewComment) : Comment!
   createLike(input: NewLike) : Like!
-  deleteLike(id : ID!) : Boolean!
+  deleteLike(id: ID!, userid: ID!) : Boolean!
+  deleteComment(id: ID!) : Boolean!
+  createCommentLike(input: NewCommentLike!) : Commentlike!
+  deleteCommentLike(commentid: Float!, userid: Float!) : Boolean!
+  createBlock(input: NewUserBlock!) : Userblock!
+  deleteBlock(input: NewUserBlock!) : Boolean!
+  createCommentReply(input: NewCommentReply!) : Commentreply!
+  deleteCommentReply(id: ID!): Boolean!
+  createCommentReplyLike(input: NewCommentReplyLike) : Commentreplylike!
+  deleteCommentReplyLike(userid: Float!, commentreplyid: Float!) : Boolean!
+  updateTheme(input: UpdateTheme!) : User!
 }

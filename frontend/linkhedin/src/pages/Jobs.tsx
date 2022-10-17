@@ -7,7 +7,8 @@ import PostJob from '../components/job/PostJob'
 import '../styles/job/job.scss'
 
 export default function Jobs() {
-    const [cookies, setCookie, removeCookie] = useCookies(['user-login'])
+    const [cookies, setCookie, removeCookie] = useCookies(['user-login', 'user-theme'])
+    const theme = cookies['user-theme']
 
     useEffect(() => {
         if(cookies['user-login'] == null) {
@@ -19,17 +20,36 @@ export default function Jobs() {
     
     return (
         <>
-            <div className='job-page'>
-                <Header />
+            {
+                theme == 1 ?
+                <>
+                    <div className='job-page'>
+                        <Header />
 
-                <div className="job">
-                    <PostJob />
+                        <div className="job">
+                            <PostJob />
 
-                    <JobList />
-                </div>
-            </div>
-            
-            <Footer />
+                            <JobList />
+                        </div>
+                    </div>
+                    
+                    <Footer />
+                </>
+                :
+                <>
+                <div className='job-dark'>
+                        <Header />
+
+                        <div className="job">
+                            <PostJob />
+
+                            <JobList />
+                        </div>
+                    </div>
+                    
+                    <Footer />
+                </>
+            }
         </>
     )
 }

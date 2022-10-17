@@ -1,6 +1,15 @@
 @import './variables/variables.scss';
 
-.message-comp {
-    background-color: $linkedin_cream;
-    min-height: 100vh;
+.message-page {
+    .message-comp {
+        background-color: $linkedin_cream;
+        min-height: 100vh;
+    }
+}
+
+.message-page-dark {
+    .message-comp {
+        background-color: $linkedin_gray_dark;
+        min-height: 100vh;
+    }
 }

@@ -107,3 +107,42 @@
         }
     }
 }
+
+@media (max-width: 500px) {
+    .loginForm {
+        margin-top: 50px;
+        width: 350px;
+
+        .login-form-title {
+            margin: 0px 70px;
+        }
+
+        .form-input-group{
+            .login-form-input {
+                input {
+                    width: 300px;
+                    margin: 0px 50px;
+                }
+            }
+
+            i {
+                right: 50px;
+            }
+
+            .google-login-button {    
+                width: 300px;
+                margin: 0px 50px;
+            }
+        }
+        
+        .forgot-password {
+            margin: 0px 50px;
+        }
+    }
+}
+
+@media (max-width: 380px) {
+    .loginForm {
+        margin-top: 25px;
+    }
+}

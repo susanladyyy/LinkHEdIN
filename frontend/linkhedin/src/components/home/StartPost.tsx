@@ -1,11 +1,13 @@
 import { useMutation, useQuery } from '@apollo/client'
 import React, { useEffect, useRef, useState } from 'react'
 import { useCookies } from 'react-cookie'
-import { GET_ALL_POST, GET_USER_BY_URL } from '../../graphql/Queries'
+import { GET_ALL_POST, GET_ALL_USERS, GET_USER_BY_URL } from '../../graphql/Queries'
 import '../../styles/modal/createpost.scss'
 import { GrClose } from 'react-icons/gr'
 import Axios from 'axios'
 import { INSERT_POST } from '../../graphql/Mutation'
+import { blue } from '@cloudinary/url-gen/actions/adjust'
+import { MentionsInput, Mention } from 'react-mentions'
 
 export default function StartPost() {
     const [cookies, setCookie, removeCookie] = useCookies(['user-login', 'user-login-id'])
@@ -20,17 +22,22 @@ export default function StartPost() {
         }
     })
 
+    const{error: errAll, loading: loadAll, data: dataAll} = useQuery(GET_ALL_USERS)
+    const{error: errPost, loading: loadPost, data: dataPost} = useQuery(GET_ALL_POST)
+
     const[insertPost] = useMutation(INSERT_POST)
     const[showModal, setShowModal] = useState(false)
 
     const startPost = () => {
         showModal ? setShowModal(false) : setShowModal(true)
     }
-
+    
     const fileRef = useRef(null)
     const[caption, setCaption] = useState("")
     const[media, setMedia] = useState("")
     const[error, setError] = useState("")
+    const[all, setAll] = useState([])
+    const[posts, setPosts] = useState([])
 
     const createPost = (caption: string, media: string) => {
         if(caption == "") {
@@ -43,7 +50,8 @@ export default function StartPost() {
                         userid: id,
                         media: null,
                         caption: caption,
-                    }
+                        display: `#${caption.toUpperCase().replace(/\s/g, '')}`
+                    }, refetchQueries: [{query: GET_ALL_POST}]
                 })
             }
             else {
@@ -52,6 +60,7 @@ export default function StartPost() {
                         userid: id,
                         media: media,
                         caption: caption,
+                        display: `#${caption.toUpperCase().replace(/\s/g, '')}`
                     }, refetchQueries: [{query: GET_ALL_POST}]
                 })
             }
@@ -95,8 +104,16 @@ export default function StartPost() {
         else {
             setDataLoad(false)
         }
-    }, [loading])
-    
+        if(dataAll) {
+            setAll(dataAll.users)
+        }
+        if(dataPost) {
+            setPosts(dataPost.posts)
+        }
+    }, [loading, dataAll, dataPost])
+
+    console.log(posts)
+
     return (
         <>
             <div className='start-post-home'>
@@ -124,9 +141,15 @@ export default function StartPost() {
                                 event?.preventDefault()
                             }}>
                                 <div className="caption">
-                                    <textarea name="" id="" cols="50" rows="8" onChange={ (e) => {
+                                    <MentionsInput value={caption} onChange={(e) => {
                                         setCaption(e.target.value)
-                                    }}></textarea>
+                                    } } style={{width: "300px", height: "150px", margin: "10px 0px", border: "2px black solid", borderRadius: "5px"}}>
+                                        <Mention trigger="@" data={dataAll['users']} style={{color: "blue"}}/>
+                                        <Mention trigger="#" data={dataPost['posts']} style={{color: "blue"}} />
+                                    </MentionsInput>
+                                    {/* <textarea name="" id="" cols="50" rows="8" onChange={ (e) => {
+                                        setCaption(e.target.value)
+                                    }}></textarea> */}
                                 </div>
                                 <div className="media">
                                     <input ref={fileRef} type="file" name="" id="" onChange={ (e) => {
@@ -138,7 +161,14 @@ export default function StartPost() {
                                             <button onClick={ () => showImage() }>Preview</button>
                                         
                                             <div className="preview">
-                                                <img src={ media } alt="" />
+                                                {
+                                                    media.toString().indexOf("mp4") != -1 ?
+                                                    <video width="150" height="100" controls>
+                                                        <source src={ media } type="video/mp4" />
+                                                    </video>
+                                                    :
+                                                    <img src={ media } alt="" />
+                                                }
                                                 <button onClick={ () => {
                                                     fileRef.current.value = null
                                                     setMedia("")

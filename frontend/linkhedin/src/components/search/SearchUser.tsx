@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useCookies } from 'react-cookie'
 import { Link, useParams } from 'react-router-dom'
 import { DELETE_CONNECTION, INSERT_CONNECTION } from '../../graphql/Mutation'
-import { GET_CONNECTION_NUM, GET_INVITATION_NUM, SEARCH_USER_BY_NAME } from '../../graphql/Queries'
+import { GET_BLOCKED, GET_CONNECTION_NUM, GET_INVITATION_NUM, SEARCH_USER_BY_NAME } from '../../graphql/Queries'
 
 export default function SearchUser() {
     const param = useParams()
@@ -12,6 +12,7 @@ export default function SearchUser() {
     const[con, setCon] = useState([])
     const[pen, setPen] = useState([])
     const[wit, setWit]= useState([])
+    const[block, setBlock] = useState([])
     const[insertConnect] = useMutation(INSERT_CONNECTION)
     const[deleteConnect] = useMutation(DELETE_CONNECTION)
 
@@ -21,6 +22,12 @@ export default function SearchUser() {
     const{error, loading, data} = useQuery(SEARCH_USER_BY_NAME, {
         variables: {
             name: name
+        }
+    })
+
+    const{error: errBlock, loading: loadBlock, data: dataBlock} = useQuery(GET_BLOCKED, {
+        variables: {
+            blocked: id
         }
     })
 
@@ -84,46 +91,53 @@ export default function SearchUser() {
         if(dataWith) {
             setWit(dataWith.userconnections)
         }
-    }, [data, dataCon, dataPen, dataWith])
+
+        if(dataBlock) {
+            setBlock(dataBlock.userblocks)
+        }
+    }, [data, dataCon, dataPen, dataWith, dataBlock])
 
     return (
         <div className='search-user'>
+            <h1>Users</h1>
             {
                 user.map((e) => {
-                    if(id != e.id) {
-                        if(con.some(item => item.useridconnect == e.id)) {
-                            return (
-                                <div className="search-profile" key={e.id}>
-                                    <p>Connection</p>
-                                    <button type='button'>Message</button>
-                                    <Link to={ `/profile/${e.profileurl}` }><h1>{e.firstname} {e.lastname}</h1></Link>
-                                </div>
-                            )
-                        }
-                        else if(pen.some(item => item.userid == e.id)) {
-                            return (
-                                <div className="search-profile" key={e.id}>
-                                    <button type='button'>Accept Invitation</button>
-                                    <Link to={ `/profile/${e.profileurl}` }><h1>{e.firstname} {e.lastname}</h1></Link>
-                                </div>
-                            )
-                        }
-                        else if(wit.some(item => item.useridconnect == e.id)) {
-                            return (
-                                <div className="search-profile" key={e.id}>
-                                    <p className='withdraw'>Pending Invitation</p>
-                                    <button type='button' className='withdraw' onClick={ () => withdraw(e.id) }>Withdraw</button>
-                                    <Link to={ `/profile/${e.profileurl}` }><h1>{e.firstname} {e.lastname}</h1></Link>
-                                </div>
-                            )
-                        }
-                        else {
-                            return (
-                                <div className="search-profile" key={e.id}>
-                                    <button type='button' onClick={ () => connect(e.id) }>Connect</button>
-                                    <Link to={ `/profile/${e.profileurl}` }><h1>{e.firstname} {e.lastname}</h1></Link>
-                                </div>
-                            )
+                    if(block.some(item => item.userid == e.id) == false) {
+                        if(id != e.id) {
+                            if(con.some(item => item.useridconnect == e.id)) {
+                                return (
+                                    <div className="search-profile" key={e.id}>
+                                        <p>Connection</p>
+                                        <button type='button'>Message</button>
+                                        <Link to={ `/profile/${e.profileurl}` }><h1>{e.firstname} {e.lastname}</h1></Link>
+                                    </div>
+                                )
+                            }
+                            else if(pen.some(item => item.userid == e.id)) {
+                                return (
+                                    <div className="search-profile" key={e.id}>
+                                        <button type='button'>Accept Invitation</button>
+                                        <Link to={ `/profile/${e.profileurl}` }><h1>{e.firstname} {e.lastname}</h1></Link>
+                                    </div>
+                                )
+                            }
+                            else if(wit.some(item => item.useridconnect == e.id)) {
+                                return (
+                                    <div className="search-profile" key={e.id}>
+                                        <p className='withdraw'>Pending Invitation</p>
+                                        <button type='button' className='withdraw' onClick={ () => withdraw(e.id) }>Withdraw</button>
+                                        <Link to={ `/profile/${e.profileurl}` }><h1>{e.firstname} {e.lastname}</h1></Link>
+                                    </div>
+                                )
+                            }
+                            else {
+                                return (
+                                    <div className="search-profile" key={e.id}>
+                                        <button type='button' onClick={ () => connect(e.id) }>Connect</button>
+                                        <Link to={ `/profile/${e.profileurl}` }><h1>{e.firstname} {e.lastname}</h1></Link>
+                                    </div>
+                                )
+                            }
                         }
                     }
                 })

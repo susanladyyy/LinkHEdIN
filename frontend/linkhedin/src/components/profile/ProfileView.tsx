@@ -1,12 +1,14 @@
 import { useMutation, useQuery } from '@apollo/client'
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { ALL_DEGREES, ALL_EMPLOYMENT_TYPES, GET_CONNECTION_NUM, GET_INVITATION_NUM, GET_JOB_BY_USER_ID, GET_PROFILE_VIEWS, GET_USER_BY_URL, GET_USER_EDUCATION, GET_USER_EXPERIENCE, GET_USER_FOLLOWER, GET_USER_FOLLOWING } from '../../graphql/Queries'
+import { ALL_DEGREES, ALL_EMPLOYMENT_TYPES, GET_BLOCK_BY_USER, GET_CONNECTION_NUM, GET_INVITATION_NUM, GET_JOB_BY_USER_ID, GET_PROFILE_VIEWS, GET_USER_BY_URL, GET_USER_EDUCATION, GET_USER_EXPERIENCE, GET_USER_FOLLOWER, GET_USER_FOLLOWING } from '../../graphql/Queries'
 import { useCookies } from 'react-cookie'
 import { MdOutlineModeEditOutline } from 'react-icons/md'
 import { AiOutlineMinus } from 'react-icons/ai'
 import { IoMdAdd } from 'react-icons/io'
-import { DELETE_CONNECTION, DELETE_EDUCATION, DELETE_EXPERIENCE, DELETE_FOLLOWER, DELETE_FOLLOWING, INSERT_CONNECTION, INSERT_FOLLOWER, INSERT_FOLLOWING, INSERT_VIEW } from '../../graphql/Mutation'
+import { DELETE_BLOCK, DELETE_CONNECTION, DELETE_EDUCATION, DELETE_EXPERIENCE, DELETE_FOLLOWER, DELETE_FOLLOWING, INSERT_BLOCK, INSERT_CONNECTION, INSERT_FOLLOWER, INSERT_FOLLOWING, INSERT_VIEW } from '../../graphql/Mutation'
+import { jsPDF } from 'jspdf'
+import html2canvas from 'html2canvas'
 
 export default function ProfileView() {
     const [cookies, setCookie, removeCookie] = useCookies(['user-login', 'user-login-id'])
@@ -33,6 +35,7 @@ export default function ProfileView() {
     const[exp, setExp] = useState([])
     const[type, setType] = useState([])
     const[pen, setPen] = useState([])
+    const[block, setBlock] = useState([])
     const[insertFollowing] = useMutation(INSERT_FOLLOWING)
     const[insertFollower] = useMutation(INSERT_FOLLOWER)
     const[removeFolw] = useMutation(DELETE_FOLLOWING)
@@ -42,6 +45,9 @@ export default function ProfileView() {
     const[insertView] = useMutation(INSERT_VIEW)
     const[removeEdu] = useMutation(DELETE_EDUCATION)
     const[removeExp] = useMutation(DELETE_EXPERIENCE)
+    const[insertBlock] = useMutation(INSERT_BLOCK)
+    const[removeBlock] = useMutation(DELETE_BLOCK)
+    const[removeConnection] = useMutation(DELETE_CONNECTION)
     
     const{error, loading, data} = useQuery(GET_USER_BY_URL, {
         variables : { 
@@ -120,6 +126,11 @@ export default function ProfileView() {
     })
 
     const{error: errType, loading: loadType, data: dataType} = useQuery(ALL_EMPLOYMENT_TYPES)
+    const{error: errBlock, loading: loadBlock, data: dataBlock} = useQuery(GET_BLOCK_BY_USER, {
+        variables: {
+            id: currId
+        }
+    })
 
     useEffect(() => {
         if(!loading){
@@ -176,7 +187,11 @@ export default function ProfileView() {
         if(dataPen) {
             setPen(dataPen.userconnections)
         }
-    }, [loading, loadJob, dataJob, dataFol, dataFolw, dataInv, dataCon, dataView, dataEdu, dataDeg, dataExp, dataType, dataPen])
+        
+        if(dataBlock) {
+            setBlock(dataBlock.userblocks)
+        }
+    }, [loading, loadJob, dataJob, dataFol, dataFolw, dataInv, dataCon, dataView, dataEdu, dataDeg, dataExp, dataType, dataPen, dataBlock])
 
     useEffect(() => {
         const incViews = () => {
@@ -280,16 +295,82 @@ export default function ProfileView() {
         })
     }
 
-    // console.log(id)
-    // console.log(dataInv)
-    // console.log(dataEdu)
-    // console.log(dataExp)
-    // console.log(dataType)
-    // console.log(dataPen)
-    // console.log(dataCon)
+    const exportAsPDF = (fileName: string, pro: string, ban: string) => {
+        const page = document.getElementById("download-profile")
+        html2canvas(page as HTMLElement).then((canvas) => {
+            const profile = canvas.toDataURL(pro)
+            const banner = canvas.toDataURL(ban)
+            const pdf = new jsPDF("p", "mm", [500, 600])
+            pdf.addImage(profile, "JPEG", 0, 0)
+            pdf.addImage(banner, "JPEG", 0, 0)
+            pdf.save(`${fileName}`)
+        })
+    }
+
+    const disconnect = (idBlocked: string) => {
+        removeConnection({
+            variables: {
+                userid: currId,
+                useridconnect: idBlocked,
+            }, refetchQueries: [{query: GET_CONNECTION_NUM, variables: {
+                id: currId,
+                status: true,
+            }}, {query: GET_CONNECTION_NUM, variables: {
+                id: id,
+                status: true,
+            }}]
+        })
+
+        removeConnection({
+            variables: {
+                userid: idBlocked,
+                useridconnect: currId,
+            }, refetchQueries: [{query: GET_CONNECTION_NUM, variables: {
+                id: currId,
+                status: true,
+            }}, {query: GET_CONNECTION_NUM, variables: {
+                id: id,
+                status: true,
+            }}]
+        })
+    }
+
+    const blockUser = (idBlocked: string) => {
+        if(con.some(item => item.useridconnect == currId) == true) {
+            disconnect(idBlocked)
+        }
+
+        if(following.some(item => item.useridfollowed == id) == true) {
+            unfollow(idBlocked)
+        }
+
+        if(pen.some(item => item.useridconnect == id) == true) {
+            withdraw(idBlocked)
+        }
+
+        insertBlock({
+            variables: {
+                userid: currId,
+                useridblocked: idBlocked
+            }, refetchQueries: [{query: GET_BLOCK_BY_USER, variables: {
+                id: currId
+            }}]
+        })
+    }
+
+    const unblockUser = (idBlocked: string) => {
+        removeBlock({
+            variables: {
+                userid: currId,
+                useridblocked: idBlocked
+            }, refetchQueries: [{query: GET_BLOCK_BY_USER, variables: {
+                id: currId
+            }}]
+        })
+    }
 
     return (
-        <div className='profileView'>
+        <div className='profileView' id='download-profile'>
             <div className="left-profile">
                 <div className="profile">
                     <div className="banner">
@@ -308,59 +389,86 @@ export default function ProfileView() {
                             null
                         }
                         { userurl['profile'] != "me" ?
-                        <div className="follow-connect">
-                            { following.length == 0 || (following.some(item => item.useridfollowed == id) == false) ? 
-                            <div className="follow">
-                                <button type='button' onClick={ () => follow(id) }>Follow</button>
-                            </div>
-                            :
-                            <div className="following">
-                                <button type='button' onClick={ () => unfollow(id) }></button>
-                            </div>
-                            }
-
-                            { inv.length != 0 && (inv.some(item => item.userid == id) == true) ?
-                            <div className="connect">
-                                <button type='button'>Accept Invite</button>
-                            </div>
-                            :
-                            <>
+                            <div className="follow-connect">
                                 {
-                                    pen.length != 0 ? ((pen.some(item => item.useridconnect == id) == true) ?
-                                    <div className="withdraw">
-                                        <button type='button' onClick={ () => withdraw(id) }>Withdraw</button>
-                                    </div> : 
-                                    <>
-                                    { 
-                                        (con.some(item => item.useridconnect == currId) == false) ? 
-                                        <div className="connect">
-                                            <button type='button' onClick={ () =>  connect(id) }>Connect</button>
-                                        </div>
-                                        :
-                                        <div className="connection">
-                                            <button type='button'>Connection</button>
-                                        </div> 
-                                    }
-                                    </>)
+                                    block.length == 0 || (block.some(item => item.useridblocked == id) == false) ?
+                                    <div className="block">
+                                        <button type='button' onClick={ () => {
+                                            blockUser(id)
+                                        }}>Block</button>
+                                    </div>
                                     :
-                                    <>
-                                    { 
-                                        (con.some(item => item.useridconnect == currId) == false) ? 
-                                        <div className="connect">
-                                            <button type='button' onClick={ () =>  connect(id) }>Connect</button>
+                                    <div className="blocked">
+                                        <button type='button' onClick={ () => {
+                                            unblockUser(id)
+                                        }}></button>
+                                    </div>
+                                }
+                                { (block.some(item => item.useridblocked == id) == false) ?
+                                    (
+                                        following.length == 0 || (following.some(item => item.useridfollowed == id) == false) ? 
+                                        <div className="follow">
+                                            <button type='button' onClick={ () => follow(id) }>Follow</button>
                                         </div>
                                         :
-                                        <div className="connection">
-                                            <button type='button'>Connection</button>
+                                        <div className="following">
+                                            <button type='button' onClick={ () => unfollow(id) }></button>
                                         </div> 
-                                    }
-                                    </>
+                                    )
+                                    :
+                                    <></>
                                 }
-                            </>
-                            } 
-                        </div>
-                        :
-                        <div className="follow-connect"></div>
+
+                                { 
+                                (block.some(item => item.useridblocked == id) == false) ?
+                                (inv.length != 0 && (inv.some(item => item.userid == id) == true) ?
+                                <div className="connect">
+                                    <button type='button'>Accept Invite</button>
+                                </div>
+                                :
+                                <>
+                                    {
+                                        pen.length != 0 ? ((pen.some(item => item.useridconnect == id) == true) ?
+                                        <div className="withdraw">
+                                            <button type='button' onClick={ () => withdraw(id) }>Withdraw</button>
+                                        </div> : 
+                                        <>
+                                        { 
+                                            (con.some(item => item.useridconnect == currId) == false) ? 
+                                            <div className="connect">
+                                                <button type='button' onClick={ () =>  connect(id) }>Connect</button>
+                                            </div>
+                                            :
+                                            <div className="connection">
+                                                <button type='button'>Connection</button>
+                                            </div> 
+                                        }
+                                        </>)
+                                        :
+                                        <>
+                                        { 
+                                            (con.some(item => item.useridconnect == currId) == false) ? 
+                                            <div className="connect">
+                                                <button type='button' onClick={ () =>  connect(id) }>Connect</button>
+                                            </div>
+                                            :
+                                            <div className="connection">
+                                                <button type='button'>Connection</button>
+                                            </div> 
+                                        }
+                                        </>
+                                    }
+                                </>)
+                                :
+                                <></>
+                                } 
+                            </div>
+                            :
+                            <div className="follow-connect">
+                                <div className="follow">
+                                    <button type='button' onClick={ () => exportAsPDF(`${data['users'][0].firstname} ${data['users'][0].lastname}'s Profile`, data['users'][0].profile, data['users'][0].banner) }>Export as PDF</button>
+                                </div>
+                            </div>
                         }
                         { dataLoad ? <h1>{data['users'][0].firstname } { data['users'][0].lastname }</h1> : <h1>Loading...</h1> }
                         { dataLoad ? (data['users'][0].headline ? <p>{ data['users'][0].headline }</p> : <p></p>) : null } 

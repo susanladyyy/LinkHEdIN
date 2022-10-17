@@ -1,299 +1,658 @@
 @import '../variables/variables.scss';
 
-.profileView {
-    margin: 10px 0px 0px;
-    height: auto;
-    padding: 20px 100px;
-    display: flex;
-    flex-direction: row;
-    background-color: $linkedin_cream;
-
-    .left-profile{
-        float: left;
+.profile-page {
+    .profileView {
+        margin: 10px 0px 0px;
+        margin-top: 0px;
+        height: auto;
+        padding: 20px 100px;
         display: flex;
-        flex-direction: column;
-        width: 67.5%;
-        margin-right: 20px;
-        position: relative;
-
-        .profile {
-            margin-bottom: 10px;
-            .banner {
-                img {
-                    width: 100%;
-                    height: 250px;
-                    border-top-left-radius: 10px;
-                    border-top-right-radius: 10px;
+        flex-direction: row;
+        background-color: $linkedin_cream;
+    
+        .left-profile{
+            float: left;
+            display: flex;
+            flex-direction: column;
+            width: 67.5%;
+            margin-right: 20px;
+            position: relative;
+    
+            .profile {
+                margin-bottom: 10px;
+                .banner {
+                    img {
+                        width: 100%;
+                        height: 250px;
+                        border-top-left-radius: 10px;
+                        border-top-right-radius: 10px;
+                    }
                 }
-            }
-        
-            .profile-image {
-                position: absolute;
-                z-index: 1;
-                top: 12%;
-                left: 5%;
-        
-                img {
-                    border-radius: 50%;
-                    width: 150px;
+            
+                .profile-image {
+                    position: absolute;
+                    z-index: 1;
+                    top: 12%;
+                    left: 5%;
+            
+                    img {
+                        border-radius: 50%;
+                        width: 150px;
+                        height: auto;
+                        border: 3px solid $white;
+                    }
+    
+                    img.db {
+                        width: 250px;
+                    }
+                }
+            
+                .profile-data {
+                    padding: 80px 40px;
+                    background-color: $white;
+                    border-bottom-left-radius: 10px;
+                    border-bottom-right-radius: 10px;
                     height: auto;
-                    border: 3px solid $white;
-                }
-
-                img.db {
-                    width: 250px;
+                    width: auto;
+                    position: relative;
+                    top: -3.75px;
+    
+                    .follow-connect-num {
+                        display: flex;
+                        flex-direction: row;
+                        margin-top: 10px;
+    
+                        p {
+                            margin-right: 30px;
+                        }
+                    }
+    
+                    .follow-connect {
+                        display: flex;
+                        .follow, .connect, .block, .blocked {
+                            margin: 20px 20px 20px 0px;
+    
+                            button {
+                                background-color: transparent;
+                                border: $accent_blue solid 1px;
+                                border-radius: 10px;
+                                color: $accent_blue;
+                                padding: 8px 20px;
+                            }
+    
+                            button:hover {
+                                background-color: $accent_blue;
+                                border-radius: 10px;
+                                color: $white;
+                                cursor: pointer;
+                            }
+                        }
+    
+                        .block, .blocked {
+                            button {
+                                background-color: transparent;
+                                border: $accent_red solid 1px;
+                                border-radius: 10px;
+                                color: $accent_red;
+                                padding: 8px 20px;
+                            }
+    
+                            button:hover {
+                                background-color: $accent_red;
+                                border-radius: 10px;
+                                color: $white;
+                                cursor: pointer;
+                            }
+                        }
+    
+                        .blocked {
+                            button::after {
+                                content: "Blocked";
+                            }
+    
+                            button:hover::after {
+                                content: "Unblock";
+                            }
+                        }
+    
+                        .withdraw {
+                            margin: 20px 20px 20px 0px;
+                            
+                            button {
+                                background-color: transparent;
+                                border: $dark_gray solid 1px;
+                                border-radius: 10px;
+                                color: $dark_gray;
+                                padding: 8px 20px;
+                            }
+    
+                            button:hover {
+                                background-color: $dark_gray;
+                                border-radius: 10px;
+                                color: $white;
+                                cursor: pointer;
+                            }
+                        }
+    
+                        .following, .connection {
+                            margin: 20px 20px 20px 0px;
+                            button {
+                                border: $accent_blue solid 1px;
+                                padding: 8px 20px;
+                                background-color: $accent_blue;
+                                border-radius: 10px;
+                                color: $white;
+                                cursor: pointer;
+                            }
+                        }
+    
+                        .following {
+                            button:hover {
+                                border: $accent_red solid 1px;
+                                color: $white;
+                                background-color: $accent_red;
+                            }
+    
+                            button::after {
+                                content: "Following";
+                            }
+    
+                            button:hover::after {
+                                content: "Unfollow";
+                            }
+                        }
+                    }
+    
+                    .connections a {
+                        color: $accent_blue;
+                        font-weight: 600;
+                        margin: 10px 0px;
+                        text-decoration: none;
+                    }
                 }
             }
-        
-            .profile-data {
-                padding: 80px 40px;
+    
+            .analytics, .resources, .about, .activity, .experience, .education, .license-certif, .skill, .interest, .uploaded-jobs {
                 background-color: $white;
-                border-bottom-left-radius: 10px;
-                border-bottom-right-radius: 10px;
-                height: auto;
-                width: auto;
-                position: relative;
-                top: -3.75px;
-
-                .follow-connect-num {
-                    display: flex;
-                    flex-direction: row;
-                    margin-top: 10px;
-
+                border-radius: 10px;
+                margin-bottom: 10px;
+            }
+    
+            .about {
+                padding: 20px;
+    
+                .title-about {
+                    font-size: 1.4em;
+                    font-weight: 550;
+                    margin-bottom: 25px;
+                }
+            }
+    
+            .experience {
+                padding: 20px;
+    
+                h1 {
+                    font-size: 1.4em;
+                    font-weight: 550;
+                    margin-bottom: 25px;
+                }
+    
+                .experienceList {
+                    margin: 5px;
+    
+                    hr {
+                        margin: 10px 0px;
+                    }
+    
                     p {
-                        margin-right: 30px;
+                        padding: 5px 0px;
                     }
                 }
-
-                .follow-connect {
-                    display: flex;
-                    .follow, .connect {
-                        margin: 20px 20px 20px 0px;
-
-                        button {
-                            background-color: transparent;
-                            border: $accent_blue solid 1px;
-                            border-radius: 10px;
-                            color: $accent_blue;
-                            padding: 8px 20px;
-                        }
-
-                        button:hover {
-                            background-color: $accent_blue;
-                            border-radius: 10px;
-                            color: $white;
-                            cursor: pointer;
-                        }
+            }
+    
+            .education {
+                padding: 20px;
+    
+                h1{
+                    font-size: 1.4em;
+                    font-weight: 550;
+                    margin-bottom: 25px;
+                }
+    
+                .educationList {
+                    margin: 5px;
+    
+                    hr {
+                        margin: 10px 0px;
                     }
-
-                    .withdraw {
-                        margin: 20px 20px 20px 0px;
-                        
-                        button {
-                            background-color: transparent;
-                            border: $dark_gray solid 1px;
-                            border-radius: 10px;
-                            color: $dark_gray;
-                            padding: 8px 20px;
-                        }
-
-                        button:hover {
-                            background-color: $dark_gray;
-                            border-radius: 10px;
-                            color: $white;
-                            cursor: pointer;
-                        }
+    
+                    hr.hr-bottom {
+                        margin: 0px 0px;
                     }
-
-                    .following, .connection {
-                        margin: 20px 20px 20px 0px;
-                        button {
-                            border: $accent_blue solid 1px;
-                            padding: 8px 20px;
-                            background-color: $accent_blue;
-                            border-radius: 10px;
-                            color: $white;
-                            cursor: pointer;
-                        }
-                    }
-
-                    .following {
-                        button:hover {
-                            border: $accent_red solid 1px;
-                            color: $white;
-                            background-color: $accent_red;
-                        }
-
-                        button::after {
-                            content: "Following";
-                        }
-
-                        button:hover::after {
-                            content: "Unfollow";
-                        }
+    
+                    p {
+                        padding: 5px 0px;
                     }
                 }
-
-                .connections a {
-                    color: $accent_blue;
-                    font-weight: 600;
-                    margin: 10px 0px;
-                    text-decoration: none;
+            }
+    
+            .skill {
+                padding: 20px;
+    
+                h1{
+                    font-size: 1.4em;
+                    font-weight: 550;
+                    margin-bottom: 25px;
                 }
             }
-        }
-
-        .analytics, .resources, .about, .activity, .experience, .education, .license-certif, .skill, .interest, .uploaded-jobs {
-            background-color: $white;
-            border-radius: 10px;
-            margin-bottom: 10px;
-        }
-
-        .about {
-            padding: 20px;
-
-            .title-about {
-                font-size: 1.4em;
-                font-weight: 550;
-                margin-bottom: 25px;
-            }
-        }
-
-        .experience {
-            padding: 20px;
-
-            h1 {
-                font-size: 1.4em;
-                font-weight: 550;
-                margin-bottom: 25px;
-            }
-
-            .experienceList {
-                margin: 5px;
-
-                hr {
-                    margin: 10px 0px;
-                }
-
-                p {
-                    padding: 5px 0px;
+    
+            .interest {
+                padding: 20px;
+    
+                h1{
+                    font-size: 1.4em;
+                    font-weight: 550;
+                    margin-bottom: 25px;
                 }
             }
-        }
-
-        .education {
-            padding: 20px;
-
-            h1{
-                font-size: 1.4em;
-                font-weight: 550;
-                margin-bottom: 25px;
-            }
-
-            .educationList {
-                margin: 5px;
-
-                hr {
-                    margin: 10px 0px;
+    
+            .uploaded-jobs {
+                padding: 20px;
+    
+                i {
+                    float: right;
+                    font-size: 1.8em;
+                    color: $dark_gray;
+                    cursor: pointer;
                 }
-
-                hr.hr-bottom {
-                    margin: 0px 0px;
+    
+                .title-job {
+                    font-size: 1.4em;
+                    font-weight: 550;
+                    margin-bottom: 25px;
                 }
-
-                p {
-                    padding: 5px 0px;
+    
+                .list-job {
+                    p {
+                        margin-bottom: 5px;
+                    }
                 }
             }
-        }
-
-        .skill {
-            padding: 20px;
-
-            h1{
-                font-size: 1.4em;
-                font-weight: 550;
-                margin-bottom: 25px;
-            }
-        }
-
-        .interest {
-            padding: 20px;
-
-            h1{
-                font-size: 1.4em;
-                font-weight: 550;
-                margin-bottom: 25px;
-            }
-        }
-
-        .uploaded-jobs {
-            padding: 20px;
-
-            i {
-                float: right;
+    
+            .edit-icon {
                 font-size: 1.8em;
                 color: $dark_gray;
+                float: right;
+            }
+    
+            .edit-icon a {
+                color: $dark_gray;
+                float: right;
+            }
+    
+            .edit-icon:hover {
+                color: black;
                 cursor: pointer;
             }
-
-            .title-job {
-                font-size: 1.4em;
-                font-weight: 550;
-                margin-bottom: 25px;
+        }
+    
+        .right-profile {
+            width: 30%;
+            margin-left: 20px;
+            .edit-pro, .jobs-profile {
+                background-color: $white;
+                border-radius: 10px;
+                margin-bottom: 10px;
             }
-
-            .list-job {
-                p {
-                    margin-bottom: 5px;
+    
+            .edit-pro {
+                h1 {
+                    padding: 10px;
+                }
+                a {
+                    font-size: 0.6em;
+                    font-weight: 550;
+                    text-decoration: none;
+                    color: black;
+                }
+            }
+    
+            .jobs-profile {
+                padding: 10px;
+                img {
+                    width: 100%;
+                    height: auto;
                 }
             }
         }
-
-        .edit-icon {
-            font-size: 1.8em;
-            color: $dark_gray;
-            float: right;
-        }
-
-        .edit-icon a {
-            color: $dark_gray;
-            float: right;
-        }
-
-        .edit-icon:hover {
-            color: black;
-            cursor: pointer;
-        }
     }
+}
 
-    .right-profile {
-        width: 30%;
-        margin-left: 20px;
-        .edit-pro, .jobs-profile {
-            background-color: $white;
-            border-radius: 10px;
-            margin-bottom: 10px;
-        }
-
-        .edit-pro {
-            h1 {
-                padding: 10px;
+.profile-dark {
+    .profileView {
+        margin: 10px 0px 0px;
+        margin-top: 0px;
+        height: auto;
+        padding: 20px 100px;
+        display: flex;
+        flex-direction: row;
+        background-color: $linkedin_gray_dark;
+    
+        .left-profile{
+            float: left;
+            display: flex;
+            flex-direction: column;
+            width: 67.5%;
+            margin-right: 20px;
+            position: relative;
+    
+            .profile {
+                margin-bottom: 10px;
+                .banner {
+                    img {
+                        width: 100%;
+                        height: 250px;
+                        border-top-left-radius: 10px;
+                        border-top-right-radius: 10px;
+                    }
+                }
+            
+                .profile-image {
+                    position: absolute;
+                    z-index: 1;
+                    top: 12%;
+                    left: 5%;
+            
+                    img {
+                        border-radius: 50%;
+                        width: 150px;
+                        height: auto;
+                        border: 3px solid $black;
+                    }
+    
+                    img.db {
+                        width: 250px;
+                    }
+                }
+            
+                .profile-data {
+                    padding: 80px 40px;
+                    background-color: $black;
+                    border-bottom-left-radius: 10px;
+                    border-bottom-right-radius: 10px;
+                    height: auto;
+                    width: auto;
+                    position: relative;
+                    top: -3.75px;
+    
+                    .follow-connect-num {
+                        display: flex;
+                        flex-direction: row;
+                        margin-top: 10px;
+    
+                        p {
+                            margin-right: 30px;
+                        }
+                    }
+    
+                    .follow-connect {
+                        display: flex;
+                        .follow, .connect, .block, .blocked {
+                            margin: 20px 20px 20px 0px;
+    
+                            button {
+                                background-color: transparent;
+                                border: $accent_blue solid 1px;
+                                border-radius: 10px;
+                                color: $accent_blue;
+                                padding: 8px 20px;
+                            }
+    
+                            button:hover {
+                                background-color: $accent_blue;
+                                border-radius: 10px;
+                                color: $dark_gray;
+                                cursor: pointer;
+                            }
+                        }
+    
+                        .block, .blocked {
+                            button {
+                                background-color: transparent;
+                                border: $accent_red solid 1px;
+                                border-radius: 10px;
+                                color: $accent_red;
+                                padding: 8px 20px;
+                            }
+    
+                            button:hover {
+                                background-color: $accent_red;
+                                border-radius: 10px;
+                                color: $dark_gray;
+                                cursor: pointer;
+                            }
+                        }
+    
+                        .blocked {
+                            button::after {
+                                content: "Blocked";
+                            }
+    
+                            button:hover::after {
+                                content: "Unblock";
+                            }
+                        }
+    
+                        .withdraw {
+                            margin: 20px 20px 20px 0px;
+                            
+                            button {
+                                background-color: transparent;
+                                border: $dark_gray solid 1px;
+                                border-radius: 10px;
+                                color: $dark_gray;
+                                padding: 8px 20px;
+                            }
+    
+                            button:hover {
+                                background-color: $dark_gray;
+                                border-radius: 10px;
+                                color: $white;
+                                cursor: pointer;
+                            }
+                        }
+    
+                        .following, .connection {
+                            margin: 20px 20px 20px 0px;
+                            button {
+                                border: $accent_blue solid 1px;
+                                padding: 8px 20px;
+                                background-color: $accent_blue;
+                                border-radius: 10px;
+                                color: $dark_gray;
+                                cursor: pointer;
+                            }
+                        }
+    
+                        .following {
+                            button:hover {
+                                border: $accent_red solid 1px;
+                                color: $dark_gray;
+                                background-color: $accent_red;
+                            }
+    
+                            button::after {
+                                content: "Following";
+                            }
+    
+                            button:hover::after {
+                                content: "Unfollow";
+                            }
+                        }
+                    }
+    
+                    .connections a {
+                        color: $accent_blue;
+                        font-weight: 600;
+                        margin: 10px 0px;
+                        text-decoration: none;
+                    }
+                }
             }
-            a {
-                font-size: 0.6em;
-                font-weight: 550;
-                text-decoration: none;
+    
+            .analytics, .resources, .about, .activity, .experience, .education, .license-certif, .skill, .interest, .uploaded-jobs {
+                background-color: $black;
+                border-radius: 10px;
+                margin-bottom: 10px;
+            }
+    
+            .about {
+                padding: 20px;
+    
+                .title-about {
+                    font-size: 1.4em;
+                    font-weight: 550;
+                    margin-bottom: 25px;
+                }
+            }
+    
+            .experience {
+                padding: 20px;
+    
+                h1 {
+                    font-size: 1.4em;
+                    font-weight: 550;
+                    margin-bottom: 25px;
+                }
+    
+                .experienceList {
+                    margin: 5px;
+    
+                    hr {
+                        margin: 10px 0px;
+                    }
+    
+                    p {
+                        padding: 5px 0px;
+                    }
+                }
+            }
+    
+            .education {
+                padding: 20px;
+    
+                h1{
+                    font-size: 1.4em;
+                    font-weight: 550;
+                    margin-bottom: 25px;
+                }
+    
+                .educationList {
+                    margin: 5px;
+    
+                    hr {
+                        margin: 10px 0px;
+                    }
+    
+                    hr.hr-bottom {
+                        margin: 0px 0px;
+                    }
+    
+                    p {
+                        padding: 5px 0px;
+                    }
+                }
+            }
+    
+            .skill {
+                padding: 20px;
+    
+                h1{
+                    font-size: 1.4em;
+                    font-weight: 550;
+                    margin-bottom: 25px;
+                }
+            }
+    
+            .interest {
+                padding: 20px;
+    
+                h1{
+                    font-size: 1.4em;
+                    font-weight: 550;
+                    margin-bottom: 25px;
+                }
+            }
+    
+            .uploaded-jobs {
+                padding: 20px;
+    
+                i {
+                    float: right;
+                    font-size: 1.8em;
+                    color: $dark_gray;
+                    cursor: pointer;
+                }
+    
+                .title-job {
+                    font-size: 1.4em;
+                    font-weight: 550;
+                    margin-bottom: 25px;
+                }
+    
+                .list-job {
+                    p {
+                        margin-bottom: 5px;
+                    }
+                }
+            }
+    
+            .edit-icon {
+                font-size: 1.8em;
+                color: $dark_gray;
+                float: right;
+            }
+    
+            .edit-icon a {
+                color: $dark_gray;
+                float: right;
+            }
+    
+            .edit-icon:hover {
                 color: black;
+                cursor: pointer;
             }
         }
-
-        .jobs-profile {
-            padding: 10px;
-            img {
-                width: 100%;
-                height: auto;
+    
+        .right-profile {
+            width: 30%;
+            margin-left: 20px;
+            .edit-pro, .jobs-profile {
+                background-color: $black;
+                border-radius: 10px;
+                margin-bottom: 10px;
+            }
+    
+            .edit-pro {
+                h1 {
+                    padding: 10px;
+                }
+                a {
+                    font-size: 0.6em;
+                    font-weight: 550;
+                    text-decoration: none;
+                    color: $white;
+                }
+            }
+    
+            .jobs-profile {
+                padding: 10px;
+                img {
+                    width: 100%;
+                    height: auto;
+                }
             }
         }
     }
+    color: $white;
 }

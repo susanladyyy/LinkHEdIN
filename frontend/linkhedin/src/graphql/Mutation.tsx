@@ -8,6 +8,8 @@ export const CREATE_USER = gql`
         $profileurl: String!
         $email: String!
         $activation: Boolean!
+        $theme: Boolean!
+        $display: String!
     ) {
         createUser (input: {
             firstname : $firstname,
@@ -15,7 +17,9 @@ export const CREATE_USER = gql`
             password : $password,
             profileurl : $profileurl,
             email : $email,
-            activation : $activation
+            activation : $activation,
+            theme: $theme,
+            display: $display
         }) {
             id
             firstname
@@ -24,6 +28,8 @@ export const CREATE_USER = gql`
             profileurl
             email
             activation
+            theme
+            display
         }
     }
 `
@@ -390,18 +396,21 @@ export const INSERT_POST = gql`
         $userid: Float!
         $media: String
         $caption: String!
+        $display: String!
     ) {
         createPost(
             input: {
                 userid: $userid
                 media: $media
                 caption: $caption
+                display: $display
             }
         ) {
             id
             userid
             media
             caption
+            display
         }
     }
 `
@@ -448,9 +457,160 @@ export const INSERT_LIKE = gql`
 export const DELETE_LIKE = gql`
     mutation deleteLike (
         $id :ID!
+        $userid : ID!
     ) {
         deleteLike (
             id: $id
+            userid: $userid
         )
+    }
+`
+
+export const DELETE_COMMENT = gql`
+    mutation deleteComment (
+        $id: ID!
+    ) {
+        deleteComment (
+            id: $id
+        )
+    }
+`
+
+export const INSERT_COMMENT_LIKE = gql`
+    mutation insertCommentLike (
+        $commentid: Float!
+        $userid: Float!
+    ) {
+        createCommentLike (
+            input: {
+                commentid: $commentid
+                userid: $userid
+            }
+        ) {
+            id
+            userid
+            commentid
+        }
+    }
+`
+
+export const DELETE_COMMENT_LIKE = gql`
+    mutation deleteCommentLike (
+        $commentid: Float!
+        $userid: Float!
+    ) {
+        deleteCommentLike (
+            commentid: $commentid
+            userid: $userid
+        )
+    }
+`
+
+export const INSERT_BLOCK = gql`
+    mutation insertBlock (
+        $userid: Float!
+        $useridblocked: Float!
+    ) {
+        createBlock (
+            input: {
+                userid: $userid
+                useridblocked: $useridblocked
+            }
+        ) {
+            id
+            userid
+            useridblocked
+        }
+    }
+`
+
+export const DELETE_BLOCK = gql`
+    mutation deleteBlock (
+    $userid: Float!
+    $useridblocked: Float!
+    ) {
+        deleteBlock (
+            input: {
+                userid: $userid
+                useridblocked: $useridblocked
+            }
+        )
+    }
+`
+
+export const INSERT_COMMENT_REPLY = gql`
+    mutation createCommentReply (
+        $commentid: Float!
+        $userid: Float!
+        $commentreply: String!
+    ) {
+        createCommentReply (
+            input: {
+                commentid: $commentid
+                userid: $userid
+                commentreply: $commentreply
+            }
+        ) {
+            id
+            commentid
+            userid
+            commentreply
+        }
+    }
+`
+
+export const DELETE_COMMENT_REPLY = gql`
+    mutation deleteCommentReply (
+        $id: ID!
+    ) {
+        deleteCommentReply (
+            id: $id
+        )
+    }
+`
+
+export const INSERT_COMMENT_REPLY_LIKE = gql`
+    mutation createCommentLike (
+        $userid: Float!
+        $commentreplyid: Float!
+    ) {
+        createCommentReplyLike (
+            input: {
+                userid: $userid
+                commentreplyid: $commentreplyid
+            }
+        ) {
+            id
+            userid
+            commentreplyid
+        }
+    }
+`
+
+export const DELETE_COMMENT_REPLY_LIKE = gql`
+    mutation deleteCommentReplyLike (
+        $userid: Float!
+        $commentreplyid: Float!
+    ) {
+        deleteCommentReplyLike (
+            userid: $userid
+            commentreplyid: $commentreplyid
+        )
+    }
+`
+
+export const UPDATE_THEME = gql`
+    mutation updateTheme (
+        $id: ID!
+        $theme: Float!
+    ) {
+        updateTheme (
+            input: {
+                id: $id
+                theme: $theme
+            }
+        ) {
+            theme
+        }
     }
 `
